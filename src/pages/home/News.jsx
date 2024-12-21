@@ -47,7 +47,7 @@ const news = [
   },
 ];
 
-const New = () => {
+const News = () => {
   return (
     <>
       <div className="py-16">
@@ -102,4 +102,4 @@ const New = () => {
   );
 };
 
-export default New;
+export default News;
