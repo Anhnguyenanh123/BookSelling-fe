@@ -47,10 +47,10 @@ const news = [
   },
 ];
 
-const New = () => {
+const News = () => {
   return (
     <>
-      <div className="py-16">
+      <div className="py-10">
         <h2 className="text-3xl font-semibold mb-6">News</h2>
       </div>
       <Swiper
@@ -102,4 +102,4 @@ const New = () => {
   );
 };
 
-export default New;
+export default News;
