@@ -19,7 +19,7 @@ const TopSellers = () => {
 
   useEffect(() => {
     fetch("books.json")
-      .then((response) => response.json())
+      .then((res) => res.json())
       .then((data) => setBooks(data));
   }, []);
 
@@ -53,6 +53,8 @@ const TopSellers = () => {
         navigation={true}
         slidesPerView={1}
         spaceBetween={30}
+        modules={[Pagination, Navigation]}
+        className="mySwiper"
         breakpoints={{
           640: {
             slidesPerView: 1,
@@ -71,8 +73,6 @@ const TopSellers = () => {
             spaceBetween: 50,
           },
         }}
-        modules={[Pagination, Navigation]}
-        className="mySwiper"
       >
         {filteredBooks.length > 0 &&
           filteredBooks.map((book, index) => (
