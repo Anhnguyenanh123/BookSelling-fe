@@ -11,6 +11,7 @@ import Orders from "../pages/home/Orders";
 import ManageOrders from "../pages/admin/ManageOrders";
 import ManageUsers from "../pages/admin/ManageUsers";
 import ManageBooks from "../pages/admin/ManageBooks";
+import PrivateRoutes from "./PrivateRoutes";
 
 const router = createBrowserRouter([
   {
@@ -21,14 +22,70 @@ const router = createBrowserRouter([
       { path: "/about", element: <div>About</div> },
       { path: "/login", element: <Login /> },
       { path: "/register", element: <Register /> },
-      { path: "/user", element: <User /> },
-      { path: "/orders", element: <Orders /> },
-      { path: "/cart", element: <CartPage /> },
-      { path: "/checkout", element: <CheckOut /> },
-      { path: "/dashboard", element: <Dashboard /> },
-      { path: "/manageorders", element: <ManageOrders /> },
-      { path: "/managebooks", element: <ManageBooks /> },
-      { path: "/manageusers", element: <ManageUsers /> },
+      {
+        path: "/user",
+        element: (
+          <PrivateRoutes>
+            <User />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "/orders",
+        element: (
+          <PrivateRoutes>
+            <Orders />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "/cart",
+        element: (
+          <PrivateRoutes>
+            <CartPage />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "/checkout",
+        element: (
+          <PrivateRoutes>
+            <CheckOut />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "/dashboard",
+        element: (
+          <PrivateRoutes>
+            <Dashboard />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "/manageorders",
+        element: (
+          <PrivateRoutes>
+            <ManageOrders />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "/managebooks",
+        element: (
+          <PrivateRoutes>
+            <ManageBooks />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "/manageusers",
+        element: (
+          <PrivateRoutes>
+            <ManageUsers />
+          </PrivateRoutes>
+        ),
+      },
     ],
   },
 ]);

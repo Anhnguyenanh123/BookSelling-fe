@@ -9,12 +9,8 @@ const CheckOut = () => {
     .reduce((total, item) => total + item.newPrice, 0)
     .toFixed(2);
   const [isChecked, setIsChecked] = useState(false);
-  const onSubmit = (data) => {
-    console.log(data);
-  };
-  const handleSubmit = (data) => {
-    console.log(data);
-  };
+  const onSubmit = (data) => {};
+  const handleSubmit = (data) => {};
 
   return (
     <>

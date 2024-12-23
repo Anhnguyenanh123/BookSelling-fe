@@ -19,7 +19,13 @@ const navigation = [
 const navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const cartItems = useSelector((state) => state.cart.cartItems);
-  const currentUser = false;
+  const currentUser = true;
+
+  const handleLogout = () => {
+    //localStorage.removeItem("user");
+    console.log("Logged out");
+  };
+
   return (
     <header className="max-w-screen-2xl mx-auto px-4 py-6">
       <nav className="flex justify-between items-center">
@@ -69,6 +75,14 @@ const navbar = () => {
                           </Link>
                         </li>
                       ))}
+                      <li>
+                        <button
+                          onClick={handleLogout}
+                          className="block w-full text-left py-2 px-4 item-sm hover:bg-gray-100 rounded-md"
+                        >
+                          Logout
+                        </button>
+                      </li>
                     </ul>
                   </div>
                 )}
