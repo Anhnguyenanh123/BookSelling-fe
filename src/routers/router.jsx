@@ -11,6 +11,8 @@ import Orders from "../pages/home/Orders";
 import ManageOrders from "../pages/admin/ManageOrders";
 import ManageUsers from "../pages/admin/ManageUsers";
 import ManageBooks from "../pages/admin/ManageBooks";
+import AddNewBook from "../pages/admin/AddNewBook";
+import EditBook from "../pages/admin/EditBook";
 import PrivateRoutes from "./PrivateRoutes";
 
 const router = createBrowserRouter([
@@ -56,35 +58,29 @@ const router = createBrowserRouter([
       },
       {
         path: "/dashboard",
-        element: (
-          <PrivateRoutes>
-            <Dashboard />
-          </PrivateRoutes>
-        ),
-      },
-      {
-        path: "/manageorders",
-        element: (
-          <PrivateRoutes>
-            <ManageOrders />
-          </PrivateRoutes>
-        ),
-      },
-      {
-        path: "/managebooks",
-        element: (
-          <PrivateRoutes>
-            <ManageBooks />
-          </PrivateRoutes>
-        ),
-      },
-      {
-        path: "/manageusers",
-        element: (
-          <PrivateRoutes>
-            <ManageUsers />
-          </PrivateRoutes>
-        ),
+        element: <Dashboard />,
+        children: [
+          {
+            path: "manageorders",
+            element: <ManageOrders />,
+          },
+          {
+            path: "managebooks",
+            element: <ManageBooks />,
+          },
+          {
+            path: "manageusers",
+            element: <ManageUsers />,
+          },
+          {
+            path: "add-new-book",
+            element: <AddNewBook />,
+          },
+          {
+            path: "edit-book/:id",
+            element: <EditBook />,
+          },
+        ],
       },
     ],
   },
