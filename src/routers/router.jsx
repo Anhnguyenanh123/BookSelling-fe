@@ -9,7 +9,7 @@ import Dashboard from "../pages/admin/Dashboard";
 import User from "../pages/home/User";
 import Orders from "../pages/home/Orders";
 import ManageOrders from "../pages/admin/ManageOrders";
-import ManageUsers from "../pages/admin/ManageUsers";
+import ManageNumber from "../pages/admin/ManageNumbers";
 import ManageBooks from "../pages/admin/ManageBooks";
 import AddNewBook from "../pages/admin/AddNewBook";
 import EditBook from "../pages/admin/EditBook";
@@ -70,7 +70,7 @@ const router = createBrowserRouter([
           },
           {
             path: "manageusers",
-            element: <ManageUsers />,
+            element: <ManageNumber />,
           },
           {
             path: "add-new-book",

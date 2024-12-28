@@ -4,12 +4,12 @@ import { FaUser, FaBook } from "react-icons/fa";
 import { TbBrandBooking } from "react-icons/tb";
 
 import StatCard from "./StatCard";
-import ManageUsers from "./ManageUsers";
+import ManageUsers from "./ManageNumbers";
 
 const Dashboard = () => {
   return (
     <>
-      <section className="flex md:bg-gray-100 max-h-screen overflow-hidden">
+      <section className="flex md:bg-gray-100 min-h-screen overflow-hidden">
         <aside className="hidden sm:flex sm:flex-col">
           <a
             href="#"

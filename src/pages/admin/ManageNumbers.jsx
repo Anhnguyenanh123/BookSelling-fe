@@ -1,4 +1,5 @@
 import React from "react";
+import RevenueChart from "./RevenueChart";
 
 const ManageUsers = () => {
   return (
@@ -13,7 +14,7 @@ const ManageUsers = () => {
               className="flex items-center justify-center h-full px-4 py-16 text-gray-400 text-3xl font-semibold 
                   bg-gray-100 border-2 border-gray-200 border-dashed rounded-md"
             >
-              Revenue Chart
+              <RevenueChart />
             </div>
           </div>
         </div>
