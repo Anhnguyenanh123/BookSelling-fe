@@ -11,6 +11,20 @@ export const AuthProvider = ({ children }) => {
   const [userToken, setUserToken] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const registerUser = async (userData) => {
+    try {
+      setLoading(true);
+      const user = await AuthService.register(userData);
+
+      setCurrentUser(user);
+    } catch (error) {
+      console.error("Registration failed:", error.response?.data || error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const loginUser = async (email, password) => {
     try {
       setLoading(true);
@@ -42,6 +56,7 @@ export const AuthProvider = ({ children }) => {
     currentUser,
     userToken,
     loginUser,
+    registerUser,
     logoutUser,
     loading,
   };
