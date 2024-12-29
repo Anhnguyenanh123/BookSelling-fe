@@ -30,11 +30,9 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       const { token, user } = await AuthService.login(email, password);
 
-      // Save token and user ID to localStorage
       localStorage.setItem("userToken", token.token);
       localStorage.setItem("userId", user.id);
 
-      // Update state
       setUserToken(token.token);
       setCurrentUser(user);
     } catch (error) {
@@ -45,7 +43,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logoutUser = () => {
-    // Clear local storage and reset state
+    localStorage.removeItem("token");
     localStorage.removeItem("userToken");
     localStorage.removeItem("userId");
     setUserToken(null);

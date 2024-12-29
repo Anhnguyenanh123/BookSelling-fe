@@ -1,30 +1,36 @@
 import React, { useState } from "react";
-import { Link } from "react-router";
-import { FaBars } from "react-icons/fa";
-import { FaSearch } from "react-icons/fa";
-import { FaUser } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { FaBars, FaSearch, FaUser } from "react-icons/fa";
 import { CiHeart } from "react-icons/ci";
 import { FaCartShopping } from "react-icons/fa6";
 
 import avatar from "../assets/avatar.png";
 import { useSelector } from "react-redux";
+import { useAuth } from "../context/AuthContext";
 
 const navigation = [
-  { name: "Dashboard", href: "/dashboard" },
   { name: "Orders", href: "/orders" },
   { name: "Cart", href: "/cart" },
   { name: "Checkout", href: "/checkout" },
 ];
 
-const navbar = () => {
+const adminNavigation = [{ name: "Dashboard", href: "/dashboard" }];
+
+const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const cartItems = useSelector((state) => state.cart.cartItems);
-  const currentUser = true;
+  const { currentUser, logoutUser } = useAuth();
 
   const handleLogout = () => {
-    //localStorage.removeItem("user");
-    console.log("Logged out");
+    logoutUser();
+    setIsDropdownOpen(false); // Close the dropdown after logout
   };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prevState) => !prevState);
+  };
+
+  const isAdmin = currentUser?.role === "admin";
 
   return (
     <header className="max-w-screen-2xl mx-auto px-4 py-6">
@@ -49,7 +55,7 @@ const navbar = () => {
           <div className="">
             {currentUser ? (
               <>
-                <button onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+                <button onClick={toggleDropdown}>
                   <img
                     src={avatar}
                     alt="avatar"
@@ -60,21 +66,23 @@ const navbar = () => {
                 </button>
                 {/* Dropdown */}
                 {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48    bg-white shadow-md rounded-md z-40">
+                  <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md z-40">
                     <ul className="py-2">
-                      {navigation.map((item, index) => (
-                        <li
-                          key={index}
-                          onClick={() => setIsDropdownOpen(false)}
-                        >
-                          <Link
-                            to={item.href}
-                            className="block py-2 px-4 item-sm hover:bg-gray-100 rounded-md"
+                      {(isAdmin ? adminNavigation : navigation).map(
+                        (item, index) => (
+                          <li
+                            key={index}
+                            onClick={() => setIsDropdownOpen(false)}
                           >
-                            {item.name}
-                          </Link>
-                        </li>
-                      ))}
+                            <Link
+                              to={item.href}
+                              className="block py-2 px-4 item-sm hover:bg-gray-100 rounded-md"
+                            >
+                              {item.name}
+                            </Link>
+                          </li>
+                        )
+                      )}
                       <li>
                         <button
                           onClick={handleLogout}
@@ -115,4 +123,4 @@ const navbar = () => {
   );
 };
 
-export default navbar;
+export default Navbar;
