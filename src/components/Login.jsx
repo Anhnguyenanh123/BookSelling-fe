@@ -1,16 +1,17 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { useAuth } from "../context/authContext";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const [message, setMessage] = useState("");
   const { loginUser } = useAuth();
+  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
-    console.log(data);
     try {
       await loginUser(data.email, data.password);
       setMessage("User created successfully");
+      navigate("/");
     } catch (error) {
       setMessage(error.message);
       alert("Error: " + error.message);

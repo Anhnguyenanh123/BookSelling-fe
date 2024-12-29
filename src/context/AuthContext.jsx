@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+import * as AuthService from "../services/AuthServices";
 
 const AuthContext = createContext();
 export const useAuth = () => {
@@ -7,35 +8,42 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  const registerUser = async (email, password) => {
-    try {
-      setLoading(true);
-      setCurrentUser({ email, password });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [userToken, setUserToken] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const loginUser = async (email, password) => {
     try {
       setLoading(true);
-      setCurrentUser({ email, password });
+      const { token, user } = await AuthService.login(email, password);
+
+      // Save token and user ID to localStorage
+      localStorage.setItem("userToken", token.token);
+      localStorage.setItem("userId", user.id);
+
+      // Update state
+      setUserToken(token.token);
+      setCurrentUser(user);
     } catch (error) {
-      console.log(error);
+      console.error("Login failed:", error.response?.data || error);
     } finally {
       setLoading(false);
     }
   };
 
+  const logoutUser = () => {
+    // Clear local storage and reset state
+    localStorage.removeItem("userToken");
+    localStorage.removeItem("userId");
+    setUserToken(null);
+    setCurrentUser(null);
+  };
+
   const value = {
     currentUser,
-    setCurrentUser,
-    registerUser,
+    userToken,
     loginUser,
+    logoutUser,
+    loading,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
