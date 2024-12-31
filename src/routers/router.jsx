@@ -56,31 +56,31 @@ const router = createBrowserRouter([
           </PrivateRoutes>
         ),
       },
+    ],
+  },
+  {
+    path: "/dashboard",
+    element: <Dashboard />,
+    children: [
       {
-        path: "/dashboard",
-        element: <Dashboard />,
-        children: [
-          {
-            path: "manageorders",
-            element: <ManageOrders />,
-          },
-          {
-            path: "managebooks",
-            element: <ManageBooks />,
-          },
-          {
-            path: "manageusers",
-            element: <ManageNumber />,
-          },
-          {
-            path: "add-new-book",
-            element: <AddNewBook />,
-          },
-          {
-            path: "edit-book/:id",
-            element: <EditBook />,
-          },
-        ],
+        path: "manageorders",
+        element: <ManageOrders />,
+      },
+      {
+        path: "managebooks",
+        element: <ManageBooks />,
+      },
+      {
+        path: "manageusers",
+        element: <ManageNumber />,
+      },
+      {
+        path: "add-new-book",
+        element: <AddNewBook />,
+      },
+      {
+        path: "edit-book/:id",
+        element: <EditBook />,
       },
     ],
   },
