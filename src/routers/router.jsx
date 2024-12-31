@@ -14,6 +14,7 @@ import ManageBooks from "../pages/admin/ManageBooks";
 import AddNewBook from "../pages/admin/AddNewBook";
 import EditBook from "../pages/admin/EditBook";
 import PrivateRoutes from "./PrivateRoutes";
+import AdminRoutes from "./AdminRoutes";
 
 const router = createBrowserRouter([
   {
@@ -60,27 +61,51 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <Dashboard />,
+    element: (
+      <AdminRoutes>
+        <Dashboard />
+      </AdminRoutes>
+    ),
     children: [
       {
         path: "manageorders",
-        element: <ManageOrders />,
+        element: (
+          <AdminRoutes>
+            <ManageOrders />
+          </AdminRoutes>
+        ),
       },
       {
         path: "managebooks",
-        element: <ManageBooks />,
+        element: (
+          <AdminRoutes>
+            <ManageBooks />
+          </AdminRoutes>
+        ),
       },
       {
         path: "manageusers",
-        element: <ManageNumber />,
+        element: (
+          <AdminRoutes>
+            <ManageNumber />
+          </AdminRoutes>
+        ),
       },
       {
         path: "add-new-book",
-        element: <AddNewBook />,
+        element: (
+          <AdminRoutes>
+            <AddNewBook />
+          </AdminRoutes>
+        ),
       },
       {
         path: "edit-book/:id",
-        element: <EditBook />,
+        element: (
+          <AdminRoutes>
+            <EditBook />
+          </AdminRoutes>
+        ),
       },
     ],
   },
