@@ -104,7 +104,7 @@ const userSlice = createSlice({
   name: "user",
   initialState: {
     users: [],
-    user: null, // For individual user fetching
+    user: null,
     loading: false,
     error: null,
     totalPages: 0,
@@ -133,7 +133,7 @@ const userSlice = createSlice({
       .addCase(fetchUserById.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.user = null; // Reset previous user data
+        state.user = null;
       })
       .addCase(fetchUserById.fulfilled, (state, action) => {
         state.loading = false;
@@ -151,7 +151,6 @@ const userSlice = createSlice({
       })
       .addCase(updateUser.fulfilled, (state, action) => {
         state.loading = false;
-        // Update the user in the users array if it exists
         const index = state.users.findIndex((u) => u.id === action.payload.id);
         if (index !== -1) {
           state.users[index] = action.payload;
@@ -169,7 +168,6 @@ const userSlice = createSlice({
       })
       .addCase(deleteUser.fulfilled, (state, action) => {
         state.loading = false;
-        // Remove the user from the users array
         state.users = state.users.filter((user) => user.id !== action.meta.arg);
       })
       .addCase(deleteUser.rejected, (state, action) => {
