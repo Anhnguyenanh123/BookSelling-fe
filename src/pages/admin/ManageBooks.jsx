@@ -1,11 +1,88 @@
-import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchBooks,
+  deleteBook,
+  updateBook,
+} from "../../redux/features/book/bookSlice";
+import Swal from "sweetalert2";
 
 const ManageBooks = () => {
+  const dispatch = useDispatch();
+  const { books, loading, error, currentPage } = useSelector(
+    (state) => state.book
+  );
+
+  const [editingBook, setEditingBook] = useState(null);
+  const [base64Image, setBase64Image] = useState("");
+
+  useEffect(() => {
+    dispatch(fetchBooks({ page: 0, limit: 10 }));
+  }, [dispatch]);
+
+  const handleDelete = (bookId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "This action will delete the book permanently.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(deleteBook(bookId))
+          .unwrap()
+          .then(() => {
+            Swal.fire("Deleted!", "The book has been deleted.", "success");
+            dispatch(fetchBooks({ page: currentPage, limit: 10 }));
+          })
+          .catch((error) => {
+            Swal.fire("Error!", `Failed to delete book: ${error}`, "error");
+          });
+      }
+    });
+  };
+
+  const handleEdit = (book) => {
+    setEditingBook({ ...book });
+    setBase64Image(book.imageData); // Set current base64 image if any
+  };
+
+  const handleUpdate = () => {
+    if (editingBook) {
+      const updatedBook = { ...editingBook, imageData: base64Image };
+      dispatch(updateBook(updatedBook))
+        .unwrap()
+        .then(() => {
+          Swal.fire("Success!", "The book has been updated.", "success");
+          setEditingBook(null);
+          dispatch(fetchBooks({ page: currentPage, limit: 10 }));
+        })
+        .catch((error) => {
+          Swal.fire("Error!", `Failed to update book: ${error}`, "error");
+        });
+    }
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result
+          .replace("data:", "")
+          .replace(/^.+,/, "");
+        setBase64Image(base64String);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <section className="py-1 bg-blueGray-50">
       <div className="w-full xl:w-8/12 mb-12 xl:mb-0 px-4 mx-auto mt-24">
-        <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded ">
+        <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded">
           <div className="rounded-t mb-0 px-4 py-3 border-0">
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
@@ -17,71 +94,164 @@ const ManageBooks = () => {
                 <button
                   className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
+                  onClick={() => dispatch(fetchBooks({ page: 0, limit: 10 }))}
                 >
-                  See all
+                  Refresh
                 </button>
               </div>
             </div>
           </div>
 
           <div className="block w-full overflow-x-auto">
-            <table className="items-center bg-transparent w-full border-collapse ">
-              <thead>
-                <tr>
-                  <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                    #
-                  </th>
-                  <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                    Book Title
-                  </th>
-                  <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                    Category
-                  </th>
-                  <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                    Price
-                  </th>
-                  <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
+            {loading ? (
+              <p>Loading...</p>
+            ) : error ? (
+              <p className="text-red-500">Error: {error}</p>
+            ) : (
+              <table className="items-center bg-transparent w-full border-collapse">
+                <thead>
+                  <tr>
+                    <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                      #
+                    </th>
+                    <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                      Book Title
+                    </th>
+                    <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                      Category
+                    </th>
+                    <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                      Price
+                    </th>
+                    <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
 
-              <tbody>
-                {/* {books &&
-                  books.map((book, index) => (
-                    <tr key={index}>
-                      <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left text-blueGray-700 ">
-                        {index + 1}
+                <tbody>
+                  {books.map((book, index) => (
+                    <tr key={book.id}>
+                      <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left text-blueGray-700">
+                        {index + 1 + currentPage * 10}
                       </th>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 ">
-                        title
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                        {book.title}
                       </td>
                       <td className="border-t-0 px-6 align-center border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                        category
+                        {book.category || "N/A"}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                        newPrice
+                        ${book.currentPrice}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 space-x-4">
-                        <Link
-                          to={`/dashboard/edit-book/${book._id}`}
-                          className="font-medium text-indigo-600 hover:text-indigo-700 mr-2 hover:underline underline-offset-2"
-                        >
-                          Edit
-                        </Link>
                         <button
-                          onClick={() => handleDeleteBook(book._id)}
+                          className="font-medium bg-yellow-500 py-1 px-4 rounded-full text-white mr-2"
+                          onClick={() => handleEdit(book)}
+                        >
+                          Update
+                        </button>
+                        <button
                           className="font-medium bg-red-500 py-1 px-4 rounded-full text-white mr-2"
+                          onClick={() => handleDelete(book.id)}
                         >
                           Delete
                         </button>
                       </td>
                     </tr>
-                  ))} */}
-              </tbody>
-            </table>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
+
+        {editingBook && (
+          <div className="mt-4 p-4 bg-white shadow-lg rounded">
+            <h4 className="text-lg font-semibold mb-2">Update Book</h4>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleUpdate();
+              }}
+            >
+              <input
+                type="text"
+                value={editingBook.title}
+                onChange={(e) =>
+                  setEditingBook({ ...editingBook, title: e.target.value })
+                }
+                className="block w-full p-2 border rounded mb-2"
+                placeholder="Title"
+              />
+              <input
+                type="text"
+                value={editingBook.author || ""}
+                onChange={(e) =>
+                  setEditingBook({ ...editingBook, author: e.target.value })
+                }
+                className="block w-full p-2 border rounded mb-2"
+                placeholder="Author"
+              />
+              <input
+                type="number"
+                value={editingBook.oldPrice || ""}
+                onChange={(e) =>
+                  setEditingBook({ ...editingBook, oldPrice: e.target.value })
+                }
+                className="block w-full p-2 border rounded mb-2"
+                placeholder="Original Price"
+              />
+              <input
+                type="number"
+                value={editingBook.newPrice || ""}
+                onChange={(e) =>
+                  setEditingBook({ ...editingBook, newPrice: e.target.value })
+                }
+                className="block w-full p-2 border rounded mb-2"
+                placeholder="Current Price"
+              />
+              <input
+                type="number"
+                value={editingBook.stock || 0}
+                onChange={(e) =>
+                  setEditingBook({ ...editingBook, stock: e.target.value })
+                }
+                className="block w-full p-2 border rounded mb-2"
+                placeholder="Stock"
+              />
+              <textarea
+                value={editingBook.description || ""}
+                onChange={(e) =>
+                  setEditingBook({
+                    ...editingBook,
+                    description: e.target.value,
+                  })
+                }
+                className="block w-full p-2 border rounded mb-2"
+                placeholder="Description"
+              />
+              <input
+                type="file"
+                onChange={handleFileChange}
+                className="block w-full p-2 border rounded mb-2"
+              />
+              <button
+                type="submit"
+                className="bg-green-500 text-white px-4 py-2 rounded"
+              >
+                Save
+              </button>
+              <button
+                type="button"
+                className="bg-gray-300 text-black px-4 py-2 rounded ml-2"
+                onClick={() => setEditingBook(null)}
+              >
+                Cancel
+              </button>
+            </form>
+          </div>
+        )}
       </div>
     </section>
   );

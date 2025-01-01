@@ -86,7 +86,7 @@ export const updateBook = createAsyncThunk(
         throw new Error("Authorization token not found");
       }
 
-      const response = await axios.put(`${BASE_URL}/book`, book, {
+      const response = await axios.put(`${BASE_URL}/book/${book.id}`, book, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "*/*",

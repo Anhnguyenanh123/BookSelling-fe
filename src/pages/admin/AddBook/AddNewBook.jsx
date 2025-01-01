@@ -1,16 +1,20 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import InputField from "./InputField";
 import SelectField from "./SelectField";
-import { useForm } from "react-hook-form"; // Import useForm from react-hook-form
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 import { addBook } from "../../../redux/features/book/bookSlice";
 import Swal from "sweetalert2";
 
 const AddNewBook = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate(); // Initialize useNavigate hook
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm(); // Destructure to get register
+  } = useForm();
   const [imageFileName, setImageFileName] = useState(null);
   const [base64Image, setBase64Image] = useState(null);
 
@@ -20,28 +24,27 @@ const AddNewBook = () => {
       setImageFileName(file.name);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setBase64Image(reader.result); // Set the base64 image string
+        const base64String = reader.result
+          .replace("data:", "")
+          .replace(/^.+,/, "");
+        setBase64Image(base64String);
       };
       reader.readAsDataURL(file);
     }
   };
 
   const onSubmit = async (data) => {
-    const userToken = localStorage.getItem("userToken"); // Get userToken from localStorage
+    const userToken = localStorage.getItem("userToken");
     if (!userToken) {
       Swal.fire(
         "Unauthorized",
         "You need to be logged in to add a book",
         "error"
       );
-      return; // Prevent form submission if user is not authenticated
+      return;
     }
 
     try {
-      const cleanedImageData = base64Image
-        ? base64Image.replace(/^data:image\/[a-zA-Z]+;base64,/, "") // Strip off the base64 prefix
-        : "";
-
       const bookData = {
         title: data.title,
         author: data.author,
@@ -49,24 +52,33 @@ const AddNewBook = () => {
         currentPrice: data.newPrice,
         stock: data.stock || 0,
         description: data.description,
-        imageData: cleanedImageData ? [cleanedImageData] : [],
+        imageData: base64Image || "",
         category: data.category,
       };
-      console.log("Book data:", bookData);
-      await addBook(bookData); // Ensure you await the async action
-      Swal.fire("Success", "Book added successfully", "success");
+
+      const resultAction = await dispatch(addBook(bookData));
+
+      if (addBook.fulfilled.match(resultAction)) {
+        Swal.fire("Success", "Book added successfully", "success");
+        navigate(-1); // Navigate back after successful submission
+      } else {
+        throw new Error(resultAction.payload || "Failed to add book");
+      }
     } catch (error) {
-      Swal.fire("Error", "Failed to add the book", "error");
+      Swal.fire("Error", error.message, "error");
     }
   };
 
   return (
     <div className="max-w-lg mx-auto md:p-6 p-3 bg-white rounded-lg shadow-md">
+      <button
+        onClick={() => navigate(-1)} // Navigate back on click
+        className="mb-4 text-blue-600 font-bold hover:underline"
+      >
+        &larr; Back
+      </button>
       <h2 className="text-2xl font-bold text-gray-800 mb-4">Add New Book</h2>
-
-      {/* Form starts here */}
-      <form onSubmit={handleSubmit(onSubmit)} className="">
-        {/* Title Field */}
+      <form onSubmit={handleSubmit(onSubmit)}>
         <InputField
           label="Title"
           name="title"
@@ -74,8 +86,6 @@ const AddNewBook = () => {
           register={register}
           error={errors.title}
         />
-
-        {/* Author Field */}
         <InputField
           label="Author"
           name="author"
@@ -83,8 +93,6 @@ const AddNewBook = () => {
           register={register}
           error={errors.author}
         />
-
-        {/* Description Field */}
         <InputField
           label="Description"
           name="description"
@@ -93,8 +101,6 @@ const AddNewBook = () => {
           register={register}
           error={errors.description}
         />
-
-        {/* Category Select Field */}
         <SelectField
           label="Category"
           name="category"
@@ -109,8 +115,6 @@ const AddNewBook = () => {
           register={register}
           error={errors.category}
         />
-
-        {/* Trending Checkbox */}
         <div className="mb-4">
           <label className="inline-flex items-center">
             <input
@@ -123,8 +127,6 @@ const AddNewBook = () => {
             </span>
           </label>
         </div>
-
-        {/* Old Price */}
         <InputField
           label="Old Price"
           name="oldPrice"
@@ -133,8 +135,6 @@ const AddNewBook = () => {
           register={register}
           error={errors.oldPrice}
         />
-
-        {/* New Price */}
         <InputField
           label="New Price"
           name="newPrice"
@@ -143,8 +143,6 @@ const AddNewBook = () => {
           register={register}
           error={errors.newPrice}
         />
-
-        {/* Stock */}
         <InputField
           label="Stock"
           name="stock"
@@ -153,8 +151,6 @@ const AddNewBook = () => {
           register={register}
           error={errors.stock}
         />
-
-        {/* Cover Image Upload */}
         <div className="mb-4">
           <label className="block text-sm font-semibold text-gray-700 mb-2">
             Cover Image
@@ -169,8 +165,6 @@ const AddNewBook = () => {
             <p className="text-sm text-gray-500">Selected: {imageFileName}</p>
           )}
         </div>
-
-        {/* Submit Button */}
         <button
           type="submit"
           className="w-full py-2 bg-green-500 text-white font-bold rounded-md"
