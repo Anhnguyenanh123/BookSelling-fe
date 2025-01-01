@@ -47,22 +47,19 @@ const ManageBooks = () => {
               </thead>
 
               <tbody>
-                {books &&
+                {/* {books &&
                   books.map((book, index) => (
                     <tr key={index}>
                       <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left text-blueGray-700 ">
                         {index + 1}
                       </th>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 ">
-                        {/* {book.title} */}
                         title
                       </td>
                       <td className="border-t-0 px-6 align-center border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                        {/* {book.category} */}
                         category
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                        {/* ${book.newPrice} */}
                         newPrice
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 space-x-4">
@@ -80,7 +77,7 @@ const ManageBooks = () => {
                         </button>
                       </td>
                     </tr>
-                  ))}
+                  ))} */}
               </tbody>
             </table>
           </div>

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 const BASE_URL = "http://localhost:8080/api";
 
@@ -6,7 +7,7 @@ export const fetchBooks = createAsyncThunk(
   "book/fetchBooks",
   async ({ page = 0, limit = 10 }, thunkAPI) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("userToken");
       if (!token) {
         throw new Error("Authorization token not found");
       }
@@ -31,7 +32,7 @@ export const fetchBookById = createAsyncThunk(
   "book/fetchBookById",
   async (bookId, thunkAPI) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("userToken");
       if (!token) {
         throw new Error("Authorization token not found");
       }
@@ -55,7 +56,7 @@ export const addBook = createAsyncThunk(
   "book/addBook",
   async (book, thunkAPI) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("userToken");
       if (!token) {
         throw new Error("Authorization token not found");
       }
@@ -66,6 +67,7 @@ export const addBook = createAsyncThunk(
           Accept: "*/*",
         },
       });
+      console.log("Book added:", response.data);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -79,7 +81,7 @@ export const updateBook = createAsyncThunk(
   "book/updateBook",
   async (book, thunkAPI) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("userToken");
       if (!token) {
         throw new Error("Authorization token not found");
       }
@@ -103,7 +105,7 @@ export const deleteBook = createAsyncThunk(
   "book/deleteBook",
   async (bookId, thunkAPI) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("userToken");
       if (!token) {
         throw new Error("Authorization token not found");
       }

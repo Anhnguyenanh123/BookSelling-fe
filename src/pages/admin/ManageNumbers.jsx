@@ -1,23 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
-import { fetchUsers } from "../../redux/features/user/userSlice";
+import { fetchBooks } from "../../redux/features/book/bookSlice";
 import RevenueChart from "./manageNumber/RevenueChart";
 
-const ManageUsers = () => {
+const ManageBooks = () => {
   const dispatch = useDispatch();
-  const { users, status, error } = useSelector((state) => state.user);
+  const { books, status, error } = useSelector((state) => state.book);
 
   useEffect(() => {
-    dispatch(fetchUsers({ page: 0, limit: 10 }));
+    dispatch(fetchBooks({ page: 0, limit: 10 })); // Fetching books with pagination
   }, [dispatch]);
-
-  const filteredUsers = users.filter((user) => user.role !== "admin");
-  console.log(users);
 
   return (
     <>
       <section className="grid md:grid-cols-2 xl:grid-cols-4 xl:grid-rows-3 xl:grid-flow-col gap-6">
+        {/* Revenue Chart */}
         <div className="flex flex-col md:col-span-2 md:row-span-2 bg-white shadow rounded-lg">
           <div className="px-6 py-5 font-semibold border-b border-gray-100">
             The number of orders per month
@@ -25,17 +22,17 @@ const ManageUsers = () => {
           <div className="p-4 flex-grow">
             <div
               className="flex items-center justify-center h-full px-4 py-16 text-gray-400 text-3xl font-semibold 
-                  bg-gray-100 border-2 border-gray-200 border-dashed rounded-md"
+                bg-gray-100 border-2 border-gray-200 border-dashed rounded-md"
             >
               <RevenueChart />
             </div>
           </div>
         </div>
 
-        {/* Users List */}
+        {/* Books List */}
         <div className="flex flex-col md:col-span-2 row-span-2 bg-white shadow rounded-lg">
           <div className="flex items-center justify-between px-6 py-5 font-semibold border-b border-gray-100">
-            <span>Users by average order</span>
+            <span>All current books</span>
           </div>
           <div className="overflow-y-auto" style={{ maxHeight: "24rem" }}>
             {status === "loading" && (
@@ -46,17 +43,19 @@ const ManageUsers = () => {
             )}
             {status === "succeeded" && (
               <ul className="grid grid-cols-2 gap-6 p-6">
-                {filteredUsers.map((user) => (
-                  <li key={user.id} className="flex items-center">
+                {books.map((book) => (
+                  <li key={book.id} className="flex items-center">
                     <div className="h-10 w-10 mr-3 bg-gray-100 rounded-full overflow-hidden">
+                      {/* Use book image URL if available, else use placeholder */}
                       <img
-                        src={`https://randomuser.me/api/portraits/men/${Math.floor(
-                          Math.random() * 99
-                        )}.jpg`}
-                        alt={`${user.name} profile picture`}
+                        src={
+                          book.imageData?.[0] ||
+                          "https://via.placeholder.com/40"
+                        }
+                        alt={`${book.title} cover`}
                       />
                     </div>
-                    <span className="text-gray-600">{user.name}</span>
+                    <span className="text-gray-600">{book.title}</span>
                   </li>
                 ))}
               </ul>
@@ -68,4 +67,4 @@ const ManageUsers = () => {
   );
 };
 
-export default ManageUsers;
+export default ManageBooks;

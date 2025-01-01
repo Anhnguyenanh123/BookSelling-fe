@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaUser, FaBook } from "react-icons/fa";
 import { TbBrandBooking } from "react-icons/tb";
 
@@ -7,6 +7,14 @@ import StatCard from "./StatCard";
 import ManageUsers from "./ManageNumbers";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userToken");
+
+    navigate("/login");
+  };
   return (
     <>
       <section className="flex md:bg-gray-100 min-h-screen overflow-hidden">
@@ -136,7 +144,11 @@ const Dashboard = () => {
                 </svg>
               </button>
               <div className="border-l pl-3 ml-3 space-x-1">
-                <button className="relative p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 focus:bg-gray-100 focus:text-gray-600 rounded-full">
+                <button
+                  onClick={handleLogout}
+                  className="relative p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 
+                  focus:bg-gray-100 focus:text-gray-600 rounded-full"
+                >
                   <span className="sr-only">Log out</span>
                   <svg
                     aria-hidden="true"
@@ -163,7 +175,7 @@ const Dashboard = () => {
               </div>
               <div className="flex flex-col md:flex-row items-start justify-end -mb-3">
                 <Link
-                  to="/dashboard/managebooks"
+                  to="/managebooks"
                   className="inline-flex px-5 py-3 text-purple-600 hover:text-purple-700 focus:text-purple-700 
                   hover:bg-purple-100 focus:bg-purple-100 border border-purple-600 rounded-md mb-3"
                 >
@@ -184,7 +196,7 @@ const Dashboard = () => {
                   Manage Books
                 </Link>
                 <Link
-                  to="/dashboard/add-new-book"
+                  to="/add-new-book"
                   className="inline-flex px-5 py-3 text-white bg-purple-600 
                   hover:bg-purple-700 focus:bg-purple-700 rounded-md ml-6 mb-3"
                 >

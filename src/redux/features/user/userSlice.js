@@ -7,7 +7,7 @@ export const fetchUsers = createAsyncThunk(
   "user/fetchUsers",
   async ({ page = 0, limit = 10 }, thunkAPI) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("userToken");
       if (!token) {
         throw new Error("Authorization token not found");
       }
@@ -32,7 +32,7 @@ export const fetchUserById = createAsyncThunk(
   "user/fetchUserById",
   async (userId, thunkAPI) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("userToken");
       if (!token) {
         throw new Error("Authorization token not found");
       }
@@ -45,8 +45,9 @@ export const fetchUserById = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
+      console.error("Error fetching user by ID:", error);
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Failed to fetch user"
+        error.response?.data?.message || "Failed to fetch user by ID"
       );
     }
   }
@@ -56,7 +57,7 @@ export const updateUser = createAsyncThunk(
   "user/updateUser",
   async (user, thunkAPI) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("userToken");
       if (!token) {
         throw new Error("Authorization token not found");
       }
@@ -80,7 +81,7 @@ export const deleteUser = createAsyncThunk(
   "user/deleteUser",
   async (userId, thunkAPI) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("userToken");
       if (!token) {
         throw new Error("Authorization token not found");
       }

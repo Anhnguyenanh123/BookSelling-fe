@@ -8,7 +8,12 @@ const ManageUsers = () => {
   const { users, status, error } = useSelector((state) => state.user);
 
   useEffect(() => {
-    dispatch(fetchUsers({ page: 0, limit: 10 }));
+    const userToken = localStorage.getItem("userToken");
+    if (userToken) {
+      dispatch(fetchUsers({ page: 0, limit: 10, token: userToken }));
+    } else {
+      console.error("User token not found!");
+    }
   }, [dispatch]);
 
   const filteredUsers = users.filter((user) => user.role !== "admin");
