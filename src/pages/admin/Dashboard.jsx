@@ -163,7 +163,7 @@ const Dashboard = () => {
               </div>
               <div className="flex flex-col md:flex-row items-start justify-end -mb-3">
                 <Link
-                  to="#"
+                  to="/dashboard/managebooks"
                   className="inline-flex px-5 py-3 text-purple-600 hover:text-purple-700 focus:text-purple-700 
                   hover:bg-purple-100 focus:bg-purple-100 border border-purple-600 rounded-md mb-3"
                 >
@@ -184,7 +184,7 @@ const Dashboard = () => {
                   Manage Books
                 </Link>
                 <Link
-                  to="#"
+                  to="/dashboard/add-new-book"
                   className="inline-flex px-5 py-3 text-white bg-purple-600 
                   hover:bg-purple-700 focus:bg-purple-700 rounded-md ml-6 mb-3"
                 >
