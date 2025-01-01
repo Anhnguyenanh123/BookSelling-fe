@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchBooks } from "../../redux/features/book/bookSlice";
 import BookCard from "../books/BookCard";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from "swiper/modules";
@@ -14,14 +16,13 @@ const categories = [
 ];
 
 const TopSellers = () => {
-  const [books, setBooks] = useState([]);
+  const dispatch = useDispatch();
+  const { books, loading, error } = useSelector((state) => state.book);
   const [selectedCategory, setSelectedCategory] = useState("");
 
   useEffect(() => {
-    fetch("books.json")
-      .then((res) => res.json())
-      .then((data) => setBooks(data));
-  }, []);
+    dispatch(fetchBooks({ page: 0, limit: 10 }));
+  }, [dispatch]);
 
   const filteredBooks =
     selectedCategory === "Choose a genre"
@@ -74,6 +75,8 @@ const TopSellers = () => {
           },
         }}
       >
+        {loading && <div>Loading...</div>}
+        {error && <div>Error: {error}</div>}
         {filteredBooks.length > 0 &&
           filteredBooks.map((book, index) => (
             <SwiperSlide key={index}>

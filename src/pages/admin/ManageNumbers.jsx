@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchBooks } from "../../redux/features/book/bookSlice";
 import RevenueChart from "./manageNumber/RevenueChart";
 
@@ -45,16 +45,6 @@ const ManageBooks = () => {
               <ul className="grid grid-cols-2 gap-6 p-6">
                 {books.map((book) => (
                   <li key={book.id} className="flex items-center">
-                    <div className="h-10 w-10 mr-3 bg-gray-100 rounded-full overflow-hidden">
-                      {/* Use book image URL if available, else use placeholder */}
-                      <img
-                        src={
-                          book.imageData?.[0] ||
-                          "https://via.placeholder.com/40"
-                        }
-                        alt={`${book.title} cover`}
-                      />
-                    </div>
                     <span className="text-gray-600">{book.title}</span>
                   </li>
                 ))}

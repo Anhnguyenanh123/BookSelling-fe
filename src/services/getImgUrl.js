@@ -1,5 +1,11 @@
-function getImgUrl(name) {
-  return new URL(`../assets/books/${name}`, import.meta.url);
-}
+export const getImgUrl = (base64String) => {
+  if (!base64String) return "";
 
-export { getImgUrl };
+  const base64Pattern = /^data:image\/(jpeg|png|jpg);base64,/;
+
+  if (base64Pattern.test(base64String)) {
+    return base64String;
+  }
+
+  return `data:image/jpeg;base64,${base64String}`;
+};
