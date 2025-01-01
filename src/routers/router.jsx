@@ -58,6 +58,10 @@ const router = createBrowserRouter([
           </PrivateRoutes>
         ),
       },
+      {
+        path: "bookdetail",
+        element: <BookDetail />,
+      },
     ],
   },
   {
@@ -83,10 +87,6 @@ const router = createBrowserRouter([
   {
     path: "edit-book/:id",
     element: <EditBook />,
-  },
-  {
-    path: "bookdetail",
-    element: <BookDetail />,
   },
 ]);
 
