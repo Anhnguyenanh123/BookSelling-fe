@@ -38,6 +38,10 @@ const AddNewBook = () => {
     }
 
     try {
+      const cleanedImageData = base64Image
+        ? base64Image.replace(/^data:image\/[a-zA-Z]+;base64,/, "") // Strip off the base64 prefix
+        : "";
+
       const bookData = {
         title: data.title,
         author: data.author,
@@ -45,9 +49,10 @@ const AddNewBook = () => {
         currentPrice: data.newPrice,
         stock: data.stock || 0,
         description: data.description,
-        imageData: base64Image ? [base64Image] : [],
+        imageData: cleanedImageData ? [cleanedImageData] : [],
         category: data.category,
       };
+      console.log("Book data:", bookData);
       await addBook(bookData); // Ensure you await the async action
       Swal.fire("Success", "Book added successfully", "success");
     } catch (error) {
