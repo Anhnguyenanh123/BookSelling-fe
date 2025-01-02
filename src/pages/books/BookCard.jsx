@@ -3,16 +3,37 @@ import { getImgUrl } from "../../services/getImgUrl";
 import { FiShoppingCart } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { addToCart } from "../../redux/features/cart/catSlice";
+import { createCartThunk } from "../../redux/features/cart/catSlice.js";
 
 const BookCard = ({ book }) => {
   const dispatch = useDispatch();
 
-  const handleAddToCart = (product) => {
-    dispatch(addToCart(product));
-  };
+  const handleAddToCart = () => {
+    const token = localStorage.getItem("userToken");
+    const userId = localStorage.getItem("userId");
 
-  console.log(book);
+    const bookItem = {
+      id: book.id,
+      title: book.title,
+      price: book.currentPrice,
+      quantity: 1,
+    };
+
+    if (!token || !userId) {
+      const localCart = JSON.parse(localStorage.getItem("cart")) || [];
+      const itemExists = localCart.some((item) => item.id === book.id);
+
+      if (!itemExists) {
+        localStorage.setItem("cart", JSON.stringify([...localCart, bookItem]));
+        alert("Item added to the cart (local)");
+      } else {
+        alert("Item is already in your cart");
+      }
+      return;
+    }
+
+    dispatch(createCartThunk({ userId, bookId: book.id, token }));
+  };
 
   return (
     <div className="rounded-lg transition-shadow duration-300">
@@ -45,7 +66,7 @@ const BookCard = ({ book }) => {
             </span>
           </p>
           <button
-            onClick={() => handleAddToCart(book)}
+            onClick={handleAddToCart}
             className="btn-primary px-6 space-x-1 flex items-center gap-1 "
           >
             <FiShoppingCart />

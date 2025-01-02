@@ -7,7 +7,7 @@ import {
   updateReview,
 } from "../../redux/features/review/reviewSlice";
 
-const ReviewSection = ({ bookId, userId, userToken }) => {
+const ReviewSection = ({ bookId, userId }) => {
   const dispatch = useDispatch();
   const reviews = useSelector((state) => state.review.reviews);
   const loading = useSelector((state) => state.review.loading);
