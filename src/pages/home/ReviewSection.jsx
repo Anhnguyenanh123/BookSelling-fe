@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import Swal from "sweetalert2";
 import {
   fetchReviews,
   submitReview,
@@ -7,7 +8,7 @@ import {
   updateReview,
 } from "../../redux/features/review/reviewSlice";
 
-const ReviewSection = ({ bookId, userId }) => {
+const ReviewSection = ({ bookId, userId, userToken }) => {
   const dispatch = useDispatch();
   const reviews = useSelector((state) => state.review.reviews);
   const loading = useSelector((state) => state.review.loading);
@@ -25,6 +26,16 @@ const ReviewSection = ({ bookId, userId }) => {
   // Handle submitting a new review
   const handleSubmitReview = (e) => {
     e.preventDefault();
+
+    if (!userToken) {
+      Swal.fire(
+        "Unauthorized",
+        "You need to be logged in to leave a review",
+        "error"
+      );
+      return;
+    }
+
     setIsSubmitting(true);
     dispatch(submitReview({ userId, bookId, ...newReview }))
       .unwrap()

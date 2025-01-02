@@ -8,15 +8,9 @@ export const fetchReviews = createAsyncThunk(
   "review/fetchReviews",
   async ({ page = 0, limit = 10 }, thunkAPI) => {
     try {
-      const token = localStorage.getItem("userToken");
-      if (!token) {
-        throw new Error("Authorization token not found");
-      }
-
       const response = await axios.get(`${BASE_URL}/review`, {
         params: { page, limit },
         headers: {
-          Authorization: `Bearer ${token}`,
           Accept: "*/*",
         },
       });

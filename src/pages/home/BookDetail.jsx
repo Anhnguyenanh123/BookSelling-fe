@@ -6,7 +6,7 @@ import { getImgUrl } from "../../services/getImgUrl";
 import ReviewSection from "./ReviewSection";
 
 const BookDetail = () => {
-  const userToken = localStorage.getItem("userToken");
+  const userToken = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -59,7 +59,7 @@ const BookDetail = () => {
         </div>
       </div>
 
-      <ReviewSection bookId={id} userId={userId} />
+      <ReviewSection bookId={id} userId={userId} userToken={userToken} />
     </div>
   );
 };

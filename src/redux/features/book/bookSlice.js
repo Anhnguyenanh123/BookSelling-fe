@@ -7,15 +7,9 @@ export const fetchBooks = createAsyncThunk(
   "book/fetchBooks",
   async ({ page = 0, limit = 10 }, thunkAPI) => {
     try {
-      const token = localStorage.getItem("userToken");
-      if (!token) {
-        throw new Error("Authorization token not found");
-      }
-
       const response = await axios.get(`${BASE_URL}/book`, {
         params: { page, limit },
         headers: {
-          Authorization: `Bearer ${token}`,
           Accept: "*/*",
         },
       });
@@ -32,14 +26,8 @@ export const fetchBookById = createAsyncThunk(
   "book/fetchBookById",
   async (bookId, thunkAPI) => {
     try {
-      const token = localStorage.getItem("userToken");
-      if (!token) {
-        throw new Error("Authorization token not found");
-      }
-
       const response = await axios.get(`${BASE_URL}/book/${bookId}`, {
         headers: {
-          Authorization: `Bearer ${token}`,
           Accept: "*/*",
         },
       });
