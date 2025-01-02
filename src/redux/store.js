@@ -3,6 +3,7 @@ import cartReducer from "../redux/features/cart/catSlice";
 import userReducer from "../redux/features/user/userSlice";
 import bookReducer from "../redux/features/book/bookSlice";
 import reviewReducer from "../redux/features/review/reviewSlice";
+import orderReducer from "../redux/features/order/ordersSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export const store = configureStore({
     user: userReducer,
     book: bookReducer,
     review: reviewReducer,
+    order: orderReducer,
   },
 });
