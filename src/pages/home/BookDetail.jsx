@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { fetchBookById } from "../../redux/features/book/bookSlice";
 import { getImgUrl } from "../../services/getImgUrl";
 import ReviewSection from "./ReviewSection";
@@ -48,14 +48,14 @@ const BookDetail = () => {
               ${book?.currentPrice || "N/A"}
             </span>
           </div>
-          <div className="mt-6 flex space-x-4">
+          <Link to={`/orders`} className="mt-6 flex space-x-4">
             <button className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition duration-200">
               Order Now
             </button>
             <button className="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-md hover:bg-gray-400 transition duration-200">
               Add to Cart
             </button>
-          </div>
+          </Link>
         </div>
       </div>
 
