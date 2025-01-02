@@ -21,7 +21,10 @@ export const createCartThunk = createAsyncThunk(
   async ({ userId, bookId, token }, { rejectWithValue }) => {
     try {
       const data = await createCart(userId, bookId, token);
-      return data;
+      return {
+        cartItems: data.orderDetails || [], // Set cartItems from orderDetails
+        cartId: data.id, // Set cartId from the response
+      };
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
@@ -33,7 +36,10 @@ export const getCartThunk = createAsyncThunk(
   async ({ userId, token }, { rejectWithValue }) => {
     try {
       const data = await getCart(userId, token);
-      return data;
+      return {
+        cartItems: data.orderDetails || [], // Set cartItems from orderDetails
+        cartId: data.id, // Set cartId from the response
+      };
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
@@ -83,10 +89,10 @@ export const cartSlice = createSlice({
   reducers: {
     addToCart: (state, action) => {
       const existingItem = state.cartItems.find(
-        (item) => item._id === action.payload._id
+        (item) => item.bookId === action.payload.bookId
       );
       if (!existingItem) {
-        state.cartItems.push({ ...action.payload, quantity: 1 });
+        state.cartItems.push({ ...action.payload, quantity: 1 }); // Initialize quantity if the item is new
         Swal.fire({
           icon: "success",
           title: "Item added to cart",
@@ -94,9 +100,11 @@ export const cartSlice = createSlice({
           timer: 1500,
         });
       } else {
+        // Update quantity if the item is already in the cart
+        existingItem.quantity += 1;
         Swal.fire({
-          icon: "error",
-          title: "Item already in cart",
+          icon: "success",
+          title: "Item quantity updated",
           showConfirmButton: false,
           timer: 1500,
         });
@@ -104,7 +112,7 @@ export const cartSlice = createSlice({
     },
     removeFromCart: (state, action) => {
       state.cartItems = state.cartItems.filter(
-        (item) => item._id !== action.payload._id
+        (item) => item.bookId !== action.payload.bookId
       );
     },
     clearCart: (state) => {
@@ -113,16 +121,30 @@ export const cartSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // Create cart
     builder
+      // Get cart
+      .addCase(getCartThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getCartThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.cartItems = action.payload.orderDetails;
+        state.cartId = action.payload.cartId;
+      })
+      .addCase(getCartThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to fetch cart";
+      })
+      // Create cart
       .addCase(createCartThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(createCartThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.cartItems = action.payload.orderDetails || [];
-        state.cartId = action.payload.id;
+        state.cartItems = action.payload.orderDetails;
+        state.cartId = action.payload.cartId;
         Swal.fire({
           icon: "success",
           title: "Cart created successfully",
@@ -139,26 +161,8 @@ export const cartSlice = createSlice({
           text: state.error,
           showConfirmButton: true,
         });
-      });
-
-    // Get cart
-    builder
-      .addCase(getCartThunk.pending, (state) => {
-        state.loading = true;
-        state.error = null;
       })
-      .addCase(getCartThunk.fulfilled, (state, action) => {
-        state.loading = false;
-        state.cartItems = action.payload.orderDetails || [];
-        state.cartId = action.payload.id;
-      })
-      .addCase(getCartThunk.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || "Failed to fetch cart";
-      });
-
-    // Update cart
-    builder
+      // Update cart
       .addCase(updateCartThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -170,10 +174,8 @@ export const cartSlice = createSlice({
       .addCase(updateCartThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to update cart";
-      });
-
-    // Remove item from cart
-    builder
+      })
+      // Remove item from cart
       .addCase(removeCartThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -185,10 +187,8 @@ export const cartSlice = createSlice({
       .addCase(removeCartThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to remove item from cart";
-      });
-
-    // Delete entire cart
-    builder
+      })
+      // Delete entire cart
       .addCase(deleteCartThunk.pending, (state) => {
         state.loading = true;
         state.error = null;

@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaBars, FaSearch, FaUser } from "react-icons/fa";
 import { CiHeart } from "react-icons/ci";
 import { FaCartShopping } from "react-icons/fa6";
 
 import avatar from "../assets/avatar.png";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useAuth } from "../context/AuthContext";
+import { getCartThunk } from "../redux/features/cart/catSlice";
 
 const navigation = [
   { name: "Orders", href: "/orders" },
@@ -18,8 +19,23 @@ const adminNavigation = [{ name: "Dashboard", href: "/dashboard" }];
 
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const cartItems = useSelector((state) => state.cart.cartItems);
   const { currentUser, logoutUser } = useAuth();
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.cartItems) || [];
+  const totalCartItems = cartItems.reduce(
+    (total, item) => total + item.quantity,
+    0
+  );
+
+  console.log(totalCartItems);
+
+  useEffect(() => {
+    if (currentUser?.id) {
+      dispatch(
+        getCartThunk({ userId: currentUser.id, token: currentUser.token })
+      );
+    }
+  }, [currentUser, dispatch]);
 
   const handleLogout = () => {
     logoutUser();
@@ -109,9 +125,9 @@ const Navbar = () => {
             className="bg-primary p-1 sm:px-6 px-2 flex items-center gap-2 rounded-md"
           >
             <FaCartShopping className="size-6" />
-            {cartItems.length > 0 ? (
+            {totalCartItems > 0 ? (
               <span className="text-sm font-semibold sm:ml-1">
-                {cartItems.length}
+                {totalCartItems}
               </span>
             ) : (
               <span className="text-sm font-semibold sm:ml-1">0</span>

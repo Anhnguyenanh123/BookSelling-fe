@@ -18,28 +18,36 @@ const BookDetail = () => {
     }
   }, [id, dispatch]);
 
+  console.log(book);
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
+
+  if (!book) return <div>Book not found.</div>;
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
       <div className="flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-6">
         <img
           src={getImgUrl(book?.imageData)}
-          alt={book?.title}
+          alt={book?.title || "Book cover"}
           className="w-48 h-72 object-cover rounded-lg"
         />
         <div className="flex-1">
           <h1 className="text-3xl font-semibold text-gray-800">
-            {book?.title}
+            {book?.title && book?.title.length > 10
+              ? book?.title.slice(0, 10) + "..."
+              : book?.title || "No Title"}
           </h1>
-          <p className="text-xl text-gray-600 mt-2">{book?.description}</p>
+          <p className="text-xl text-gray-600 mt-2">
+            {book?.description || "No description available"}
+          </p>
           <div className="mt-4 flex items-center space-x-4">
             <span className="text-gray-500 line-through text-lg">
-              ${book?.originalPrice}
+              ${book?.originalPrice || "N/A"}
             </span>
             <span className="text-xl font-semibold text-green-600">
-              ${book?.currentPrice}
+              ${book?.currentPrice || "N/A"}
             </span>
           </div>
           <div className="mt-6 flex space-x-4">
