@@ -4,7 +4,7 @@ import { FaUser, FaBook } from "react-icons/fa";
 import { TbBrandBooking } from "react-icons/tb";
 
 import StatCard from "./StatCard";
-import ManageUsers from "./ManageNumbers";
+import ManageNumbers from "./ManageNumbers";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -52,15 +52,6 @@ const Dashboard = () => {
                 className="inline-flex items-center justify-center py-3 hover:text-gray-400 hover:bg-gray-700 
                 focus:text-gray-400 focus:bg-gray-700 rounded-lg"
               >
-                <span className="sr-only">Manage Books</span>
-                <FaBook className="h-6 w-6" />
-              </Link>
-              <Link
-                to="#"
-                className="inline-flex items-center justify-center py-3 hover:text-gray-400 hover:bg-gray-700 
-                focus:text-gray-400 focus:bg-gray-700 rounded-lg"
-              >
-                <span className="sr-only">Manage Users</span>
                 <FaUser className="h-6 w-6" />
               </Link>
               <Link
@@ -199,7 +190,7 @@ const Dashboard = () => {
               </div>
             </div>
             <StatCard />
-            <ManageUsers />
+            <ManageNumbers />
           </main>
         </div>
       </section>

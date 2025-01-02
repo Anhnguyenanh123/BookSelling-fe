@@ -12,7 +12,6 @@ import ManageOrders from "../pages/admin/ManageOrders";
 import ManageNumber from "../pages/admin/ManageNumbers";
 import ManageBooks from "../pages/admin/ManageBooks";
 import AddNewBook from "../pages/admin/AddBook/AddNewBook";
-import EditBook from "../pages/admin/EditBook";
 import PrivateRoutes from "./PrivateRoutes";
 import AdminRoutes from "./AdminRoutes";
 import BookDetail from "../pages/home/BookDetail";
@@ -83,10 +82,6 @@ const router = createBrowserRouter([
   {
     path: "add-new-book",
     element: <AddNewBook />,
-  },
-  {
-    path: "edit-book/:id",
-    element: <EditBook />,
   },
 ]);
 

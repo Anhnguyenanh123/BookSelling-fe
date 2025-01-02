@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import {
   fetchBooks,
   deleteBook,
@@ -9,6 +10,7 @@ import Swal from "sweetalert2";
 
 const ManageBooks = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // Initialize navigate
   const { books, loading, error, currentPage } = useSelector(
     (state) => state.book
   );
@@ -51,8 +53,11 @@ const ManageBooks = () => {
 
   const handleUpdate = () => {
     if (editingBook) {
-      const updatedBook = { ...editingBook, imageData: base64Image };
-      dispatch(updateBook(updatedBook))
+      const { oldPrice, newPrice, ...updatedBook } = editingBook;
+
+      const finalBook = { ...updatedBook, imageData: base64Image };
+
+      dispatch(updateBook(finalBook))
         .unwrap()
         .then(() => {
           Swal.fire("Success!", "The book has been updated.", "success");
@@ -97,6 +102,13 @@ const ManageBooks = () => {
                   onClick={() => dispatch(fetchBooks({ page: 0, limit: 10 }))}
                 >
                   Refresh
+                </button>
+                <button
+                  className="bg-gray-500 text-white text-xs font-bold uppercase px-3 py-1 rounded ml-2"
+                  type="button"
+                  onClick={() => navigate(-1)} // Back navigation
+                >
+                  Back
                 </button>
               </div>
             </div>
@@ -165,93 +177,6 @@ const ManageBooks = () => {
             )}
           </div>
         </div>
-
-        {editingBook && (
-          <div className="mt-4 p-4 bg-white shadow-lg rounded">
-            <h4 className="text-lg font-semibold mb-2">Update Book</h4>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleUpdate();
-              }}
-            >
-              <input
-                type="text"
-                value={editingBook.title}
-                onChange={(e) =>
-                  setEditingBook({ ...editingBook, title: e.target.value })
-                }
-                className="block w-full p-2 border rounded mb-2"
-                placeholder="Title"
-              />
-              <input
-                type="text"
-                value={editingBook.author || ""}
-                onChange={(e) =>
-                  setEditingBook({ ...editingBook, author: e.target.value })
-                }
-                className="block w-full p-2 border rounded mb-2"
-                placeholder="Author"
-              />
-              <input
-                type="number"
-                value={editingBook.oldPrice || ""}
-                onChange={(e) =>
-                  setEditingBook({ ...editingBook, oldPrice: e.target.value })
-                }
-                className="block w-full p-2 border rounded mb-2"
-                placeholder="Original Price"
-              />
-              <input
-                type="number"
-                value={editingBook.newPrice || ""}
-                onChange={(e) =>
-                  setEditingBook({ ...editingBook, newPrice: e.target.value })
-                }
-                className="block w-full p-2 border rounded mb-2"
-                placeholder="Current Price"
-              />
-              <input
-                type="number"
-                value={editingBook.stock || 0}
-                onChange={(e) =>
-                  setEditingBook({ ...editingBook, stock: e.target.value })
-                }
-                className="block w-full p-2 border rounded mb-2"
-                placeholder="Stock"
-              />
-              <textarea
-                value={editingBook.description || ""}
-                onChange={(e) =>
-                  setEditingBook({
-                    ...editingBook,
-                    description: e.target.value,
-                  })
-                }
-                className="block w-full p-2 border rounded mb-2"
-                placeholder="Description"
-              />
-              <input
-                type="file"
-                onChange={handleFileChange}
-                className="block w-full p-2 border rounded mb-2"
-              />
-              <button
-                type="submit"
-                className="bg-green-500 text-white px-4 py-2 rounded"
-              >
-                Save
-              </button>
-              <button
-                type="button"
-                className="bg-gray-300 text-black px-4 py-2 rounded ml-2"
-                onClick={() => setEditingBook(null)}
-              >
-                Cancel
-              </button>
-            </form>
-          </div>
-        )}
       </div>
     </section>
   );

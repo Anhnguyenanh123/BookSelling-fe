@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchBooks } from "../../redux/features/book/bookSlice";
 import RevenueChart from "./manageNumber/RevenueChart";
 
-const ManageBooks = () => {
+const ManageNumbers = () => {
   const dispatch = useDispatch();
   const { books, status, error } = useSelector((state) => state.book);
 
@@ -57,4 +57,4 @@ const ManageBooks = () => {
   );
 };
 
-export default ManageBooks;
+export default ManageNumbers;
