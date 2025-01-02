@@ -18,8 +18,6 @@ const BookDetail = () => {
     }
   }, [id, dispatch]);
 
-  console.log(book);
-
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
@@ -61,8 +59,7 @@ const BookDetail = () => {
         </div>
       </div>
 
-      {/* Use the new ReviewSection component */}
-      <ReviewSection bookId={id} userId={userId} userToken={userToken} />
+      <ReviewSection bookId={id} userId={userId} />
     </div>
   );
 };
