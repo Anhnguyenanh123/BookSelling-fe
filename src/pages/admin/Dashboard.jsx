@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import StatCard from "./StatCard";
 import ManageNumbers from "./ManageNumbers";
+import Swal from "sweetalert2";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -14,11 +15,23 @@ const Dashboard = () => {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("userId");
-    localStorage.removeItem("userToken");
-
-    navigate("/login");
+    Swal.fire({
+      title: "Are you sure you want to log out?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, log out",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem("userId");
+        localStorage.removeItem("userToken");
+        navigate("/login");
+        Swal.fire("Logged out!", "You have been logged out.", "success");
+      }
+    });
   };
+
   return (
     <>
       <section className="flex md:bg-gray-100 min-h-screen overflow-hidden">

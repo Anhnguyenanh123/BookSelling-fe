@@ -34,8 +34,20 @@ const Navbar = () => {
   }, [currentUser, dispatch]);
 
   const handleLogout = () => {
-    logoutUser();
-    setIsDropdownOpen(false); // Close the dropdown after logout
+    Swal.fire({
+      title: "Are you sure you want to log out?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, log out",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        logoutUser();
+        setIsDropdownOpen(false); // Close the dropdown after logout
+        Swal.fire("Logged out!", "You have been logged out.", "success");
+      }
+    });
   };
 
   const toggleDropdown = () => {
