@@ -1,15 +1,36 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchBooks } from "../../redux/features/book/bookSlice";
+import { fetchUsers, deleteUser } from "../../redux/features/user/userSlice";
 import RevenueChart from "./manageNumber/RevenueChart";
+import Swal from "sweetalert2";
 
 const ManageNumbers = () => {
   const dispatch = useDispatch();
-  const { books, status, error } = useSelector((state) => state.book);
+
+  const { users } = useSelector((state) => state.user);
 
   useEffect(() => {
-    dispatch(fetchBooks({ page: 0, limit: 10 })); // Fetching books with pagination
+    dispatch(fetchUsers({ page: 0, limit: 10 }));
   }, [dispatch]);
+
+  const filteredUsers = users.filter((user) => user.role !== "admin");
+
+  const handleBanUser = (userId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, ban them!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(deleteUser(userId));
+        Swal.fire("Banned!", "The user has been banned.", "success");
+      }
+    });
+  };
 
   return (
     <>
@@ -29,27 +50,37 @@ const ManageNumbers = () => {
           </div>
         </div>
 
-        {/* Books List */}
+        {/* Users List */}
         <div className="flex flex-col md:col-span-2 row-span-2 bg-white shadow rounded-lg">
           <div className="flex items-center justify-between px-6 py-5 font-semibold border-b border-gray-100">
-            <span>All current books</span>
+            <span>All current users</span>
           </div>
           <div className="overflow-y-auto" style={{ maxHeight: "24rem" }}>
-            {status === "loading" && (
-              <div className="p-6 text-gray-500">Loading...</div>
-            )}
-            {status === "failed" && (
-              <div className="p-6 text-red-500">Error: {error}</div>
-            )}
-            {status === "succeeded" && (
-              <ul className="grid grid-cols-2 gap-6 p-6">
-                {books.map((book) => (
-                  <li key={book.id} className="flex items-center">
-                    <span className="text-gray-600">{book.title}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
+            <ul className="p-6 space-y-4">
+              {filteredUsers.map((user) => (
+                <li
+                  key={user.id}
+                  className="flex justify-between items-center p-4 bg-gray-100 border border-gray-200 rounded-lg"
+                >
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      {user.name}
+                    </h3>
+                    <p className="text-sm text-gray-600">Email: {user.email}</p>
+                    <p className="text-sm text-gray-600">Phone: {user.phone}</p>
+                    <p className="text-sm text-gray-600">
+                      Address: {user.address}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleBanUser(user.id)}
+                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                  >
+                    Ban
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>

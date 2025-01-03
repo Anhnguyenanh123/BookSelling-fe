@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import * as AuthService from "../services/AuthServices";
+import { useEffect } from "react";
 
 const AuthContext = createContext();
 export const useAuth = () => {
@@ -10,6 +11,11 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [userToken, setUserToken] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userToken");
+  }, []);
 
   const registerUser = async (userData) => {
     try {

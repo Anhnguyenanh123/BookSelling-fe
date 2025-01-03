@@ -11,7 +11,6 @@ import ManageNumber from "../pages/admin/ManageNumbers";
 import ManageBooks from "../pages/admin/ManageBooks";
 import AddNewBook from "../pages/admin/AddBook/AddNewBook";
 import PrivateRoutes from "./PrivateRoutes";
-import AdminRoutes from "./AdminRoutes";
 import BookDetail from "../pages/home/BookDetail";
 
 const router = createBrowserRouter([
