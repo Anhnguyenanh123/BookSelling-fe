@@ -7,7 +7,6 @@ import CartPage from "../pages/books/CartPage";
 import Dashboard from "../pages/admin/Dashboard";
 import User from "../pages/home/User";
 import Orders from "../pages/home/Orders";
-import ManageOrders from "../pages/admin/ManageOrders";
 import ManageNumber from "../pages/admin/ManageNumbers";
 import ManageBooks from "../pages/admin/ManageBooks";
 import AddNewBook from "../pages/admin/AddBook/AddNewBook";
@@ -58,10 +57,7 @@ const router = createBrowserRouter([
     path: "/dashboard",
     element: <Dashboard />,
   },
-  {
-    path: "manageorders",
-    element: <ManageOrders />,
-  },
+
   {
     path: "managebooks",
     element: <ManageBooks />,
