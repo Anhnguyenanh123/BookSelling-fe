@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import {
   fetchOrders,
   createOrder,
+  deleteOrder,
 } from "../../redux/features/order/ordersSlice.js";
 import { fetchUserById } from "../../redux/features/user/userSlice.js";
 import { fetchBookById } from "../../redux/features/book/bookSlice.js";
@@ -72,6 +73,10 @@ const Orders = () => {
     });
   }, [orders, dispatch, books]);
 
+  const handleDeleteOrder = (orderId) => {
+    dispatch(deleteOrder(orderId));
+  };
+
   return (
     <div className="py-14 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto">
       <div className="mt-10 flex flex-col xl:flex-row jusitfy-center items-stretch w-full xl:space-x-8 space-y-4 md:space-y-6 xl:space-y-0">
@@ -129,6 +134,14 @@ const Orders = () => {
                     <p className="text-base dark:text-gray-300 font-semibold leading-4 text-gray-600">
                       ${orderTotalPrice}
                     </p>
+                  </div>
+                  <div className="mt-4">
+                    <button
+                      onClick={() => handleDeleteOrder(order.id)}
+                      className="text-white bg-red-500 hover:bg-red-600 font-semibold py-2 px-4 rounded-md"
+                    >
+                      Delete Order
+                    </button>
                   </div>
                   <div className="mt-6">
                     <Payment orderId={order.id} />
