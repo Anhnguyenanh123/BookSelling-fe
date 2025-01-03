@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaUser } from "react-icons/fa";
-
 import StatCard from "./StatCard";
 import ManageNumbers from "./ManageNumbers";
 
@@ -53,13 +51,6 @@ const Dashboard = () => {
                   />
                 </svg>
               </Link>
-              <Link
-                to="#"
-                className="inline-flex items-center justify-center py-3 hover:text-gray-400 hover:bg-gray-700 
-                focus:text-gray-400 focus:bg-gray-700 rounded-lg"
-              >
-                <FaUser className="h-6 w-6" />
-              </Link>
             </nav>
           </div>
         </aside>
@@ -89,8 +80,7 @@ const Dashboard = () => {
               <button className="inline-flex items-center p-2 hover:bg-gray-100 focus:bg-gray-100 rounded-lg">
                 <span className="sr-only">User Menu</span>
                 <div className="hidden md:flex md:flex-col md:items-end md:leading-tight">
-                  <span className="font-semibold">Grace Simmons</span>
-                  <span className="text-sm text-gray-600">Lecturer</span>
+                  <span className="font-semibold">Admin</span>
                 </div>
                 <span className="h-12 w-12 ml-2 sm:ml-3 mr-2 bg-gray-100 rounded-full overflow-hidden">
                   <img
