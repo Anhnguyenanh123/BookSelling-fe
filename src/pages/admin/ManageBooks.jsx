@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import {
   fetchBooks,
   deleteBook,
@@ -8,9 +8,11 @@ import {
 } from "../../redux/features/book/bookSlice";
 import Swal from "sweetalert2";
 
+const categories = ["Business", "Fiction", "Horror", "Adventure"];
+
 const ManageBooks = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
   const { books, loading, error, currentPage } = useSelector(
     (state) => state.book
   );
@@ -60,11 +62,9 @@ const ManageBooks = () => {
 
   const handleUpdate = () => {
     if (editingBook) {
-      const { oldPrice, newPrice, ...updatedBook } = editingBook;
+      const updatedBook = { ...editingBook, imageData: base64Image };
 
-      const finalBook = { ...updatedBook, imageData: base64Image };
-
-      dispatch(updateBook(finalBook))
+      dispatch(updateBook(updatedBook))
         .unwrap()
         .then(() => {
           Swal.fire("Success!", "The book has been updated.", "success");
@@ -113,7 +113,7 @@ const ManageBooks = () => {
                 <button
                   className="bg-gray-500 text-white text-xs font-bold uppercase px-3 py-1 rounded ml-2"
                   type="button"
-                  onClick={() => navigate(-1)} // Back navigation
+                  onClick={() => navigate(-1)}
                 >
                   Back
                 </button>
@@ -185,6 +185,82 @@ const ManageBooks = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal for editing book */}
+      {editingBook && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/2">
+            <h2 className="text-lg font-semibold mb-4">Edit Book</h2>
+            <div>
+              <label className="block mb-2">Title</label>
+              <input
+                type="text"
+                value={editingBook.title}
+                onChange={(e) =>
+                  setEditingBook({ ...editingBook, title: e.target.value })
+                }
+                className="w-full px-3 py-2 border border-gray-300 rounded"
+              />
+            </div>
+            <div className="mt-4">
+              <label className="block mb-2">Category</label>
+              <select
+                value={editingBook.category}
+                onChange={(e) =>
+                  setEditingBook({ ...editingBook, category: e.target.value })
+                }
+                className="w-full px-3 py-2 border border-gray-300 rounded"
+              >
+                <option value="">Select a category</option>
+                {categories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mt-4">
+              <label className="block mb-2">Price</label>
+              <input
+                type="number"
+                value={editingBook.currentPrice}
+                onChange={(e) =>
+                  setEditingBook({
+                    ...editingBook,
+                    currentPrice: e.target.value,
+                  })
+                }
+                className="w-full px-3 py-2 border border-gray-300 rounded"
+              />
+            </div>
+            <div className="mt-4">
+              <label className="block mb-2">Image</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded"
+              />
+            </div>
+
+            <div className="mt-4 flex justify-end">
+              <button
+                onClick={handleUpdate}
+                className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
+              >
+                Save
+              </button>
+              <button
+                onClick={() => setEditingBook(null)}
+                className="bg-gray-500 text-white px-4 py-2 rounded"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

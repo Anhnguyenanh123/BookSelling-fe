@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { FaBars, FaSearch, FaUser } from "react-icons/fa";
 import { CiHeart } from "react-icons/ci";
 import { FaCartShopping } from "react-icons/fa6";
+import Swal from "sweetalert2";
 
 import avatar from "../assets/avatar.png";
 import { useSelector, useDispatch } from "react-redux";
