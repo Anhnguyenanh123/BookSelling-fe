@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Swal from "sweetalert2";
 import {
-  fetchReviews,
+  fetchReviewsByBookId,
   submitReview,
   deleteReview,
   updateReview,
@@ -20,8 +20,8 @@ const ReviewSection = ({ bookId, userId, userToken }) => {
 
   // Fetch reviews when component is mounted
   useEffect(() => {
-    dispatch(fetchReviews({ page: 0, limit: 10 }));
-  }, [dispatch]);
+    dispatch(fetchReviewsByBookId({ bookId, page: 0, limit: 10 }));
+  }, [dispatch, bookId]);
 
   // Handle submitting a new review
   const handleSubmitReview = (e) => {
@@ -52,7 +52,7 @@ const ReviewSection = ({ bookId, userId, userToken }) => {
       .unwrap()
       .then(() => {
         // Refetch all reviews after deleting
-        dispatch(fetchReviews({ page: 0, limit: 10 }));
+        dispatch(fetchReviewsByBookId({ bookId, page: 0, limit: 10 }));
       });
   };
 
@@ -69,11 +69,23 @@ const ReviewSection = ({ bookId, userId, userToken }) => {
     ).then(() => setEditReview(null)); // Reset after update
   };
 
-  // Render stars based on rating value
-  const renderStars = (rating) => {
-    const fullStars = "★".repeat(rating); // full stars
-    const emptyStars = "☆".repeat(5 - rating); // empty stars
-    return fullStars + emptyStars;
+  // Render stars based on rating value (and handle clicks)
+  const renderStars = (rating, editable = false, handleClick = () => {}) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <span
+          key={i}
+          onClick={editable ? () => handleClick(i) : null}
+          className={`cursor-pointer ${
+            i <= rating ? "text-yellow-500" : "text-gray-400"
+          }`}
+        >
+          ★
+        </span>
+      );
+    }
+    return stars;
   };
 
   return (
@@ -107,6 +119,12 @@ const ReviewSection = ({ bookId, userId, userToken }) => {
               {/* Editable comment */}
               {editReview && editReview.id === review.id ? (
                 <div>
+                  <div className="flex space-x-2 mb-2">
+                    {/* Render stars for editing */}
+                    {renderStars(editReview.rating, true, (rating) =>
+                      setEditReview({ ...editReview, rating })
+                    )}
+                  </div>
                   <textarea
                     value={editReview.comment}
                     onChange={(e) =>
@@ -156,6 +174,13 @@ const ReviewSection = ({ bookId, userId, userToken }) => {
       <div className="mt-6">
         <h3 className="text-xl font-semibold text-gray-800">Leave a Review</h3>
         <form className="mt-4 space-y-4" onSubmit={handleSubmitReview}>
+          {/* Rating stars */}
+          <div className="flex space-x-2">
+            {renderStars(newReview.rating, true, (rating) =>
+              setNewReview({ ...newReview, rating })
+            )}
+          </div>
+
           <textarea
             value={newReview.comment}
             onChange={(e) =>

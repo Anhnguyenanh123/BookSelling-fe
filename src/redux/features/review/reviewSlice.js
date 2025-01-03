@@ -24,6 +24,27 @@ export const fetchReviews = createAsyncThunk(
   }
 );
 
+// Fetch reviews by bookId thunk
+export const fetchReviewsByBookId = createAsyncThunk(
+  "review/fetchReviewsByBookId",
+  async ({ bookId, page = 0, limit = 10 }, thunkAPI) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/review/book/${bookId}`, {
+        params: { page, limit },
+        headers: {
+          Accept: "*/*",
+        },
+      });
+
+      return response.data; // Return reviews data
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Failed to fetch reviews"
+      );
+    }
+  }
+);
+
 // Submit review thunk (unchanged from your code)
 export const submitReview = createAsyncThunk(
   "review/submitReview",
@@ -165,6 +186,24 @@ const reviewSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+
+      // Handle fetching reviews by bookId
+      .addCase(fetchReviewsByBookId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchReviewsByBookId.fulfilled, (state, action) => {
+        state.loading = false;
+        state.reviews = action.payload.content; // Store the reviews from the API response
+        state.totalPages = action.payload.totalPages; // Store the total pages for pagination
+        state.currentPage = action.payload.number; // Current page number
+        state.totalElements = action.payload.totalElements; // Total elements count
+      })
+      .addCase(fetchReviewsByBookId.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
       // Handle deleting review
       .addCase(deleteReview.pending, (state) => {
         state.loading = true;
@@ -180,6 +219,7 @@ const reviewSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+
       // Handle updating review
       .addCase(updateReview.pending, (state) => {
         state.loading = true;
