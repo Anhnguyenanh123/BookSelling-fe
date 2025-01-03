@@ -4,6 +4,7 @@ import userReducer from "../redux/features/user/userSlice";
 import bookReducer from "../redux/features/book/bookSlice";
 import reviewReducer from "../redux/features/review/reviewSlice";
 import orderReducer from "../redux/features/order/ordersSlice";
+import payReducer from "../redux/features/pay/paySlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
     book: bookReducer,
     review: reviewReducer,
     order: orderReducer,
+    pay: payReducer,
   },
 });

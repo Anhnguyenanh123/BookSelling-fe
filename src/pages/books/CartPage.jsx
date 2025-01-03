@@ -26,8 +26,6 @@ const CartPage = () => {
     }
   }, [dispatch, userId]);
 
-  console.log(cartItems);
-
   useEffect(() => {
     const fetchBooks = async () => {
       const details = {};
