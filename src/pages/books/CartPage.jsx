@@ -76,7 +76,9 @@ const CartPage = () => {
   }
 
   const handleCheckOut = () => {
-    navigate("/orders", { state: { cartItems } });
+    dispatch(deleteCartThunk({ userId })).then(() => {
+      navigate("/orders", { state: { cartItems } });
+    });
   };
 
   return (
