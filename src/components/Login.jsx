@@ -9,9 +9,22 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     try {
-      await loginUser(data.email, data.password);
-      setMessage("User created successfully");
-      navigate("/");
+      const user = await loginUser(data.email, data.password);
+
+      if (user?.banned) {
+        Swal.fire({
+          title: "You have been banned",
+          text: "Your account has been banned from the platform.",
+          icon: "error",
+          confirmButtonText: "Ok",
+          timer: 3000,
+          timerProgressBar: true,
+        });
+        return;
+      }
+
+      setMessage("Login successful");
+      navigate("/"); // Redirect to home page on successful login
     } catch (error) {
       setMessage(error.message);
       alert("Error: " + error.message);
