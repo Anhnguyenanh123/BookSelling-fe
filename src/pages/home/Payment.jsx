@@ -1,20 +1,24 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { initiatePayment } from "../../redux/features/pay/paySlice";
 import Swal from "sweetalert2";
+import QRCode from "qrcode";
 
-const Payment = ({ orderId }) => {
+const Payment = ({ orderId, totalPrice }) => {
   const dispatch = useDispatch();
   const { loading, paymentStatus, checkoutUrl, qrCode, paymentError } =
     useSelector((state) => state.payment) || {};
+  const [qrCodeImage, setQrCodeImage] = useState(null);
 
   const handlePayment = () => {
     dispatch(initiatePayment(orderId));
   };
 
+  console.log("orderId:", orderId);
+  console.log("totalPrice:", totalPrice);
+
   // Function to open the QR code in a new window
   const openQRCodeInNewWindow = (qrCodeUrl) => {
-    console.log("Opening QR Code in a new window");
     const newWindow = window.open("", "_blank", "width=500,height=500");
 
     if (newWindow) {
@@ -33,6 +37,18 @@ const Payment = ({ orderId }) => {
       });
     }
   };
+
+  useEffect(() => {
+    if (qrCode) {
+      QRCode.toDataURL(qrCode)
+        .then((url) => {
+          setQrCodeImage(url);
+        })
+        .catch((err) => {
+          console.error("Failed to generate QR code:", err);
+        });
+    }
+  }, [qrCode]);
 
   useEffect(() => {
     if (paymentStatus === "success") {
@@ -59,7 +75,7 @@ const Payment = ({ orderId }) => {
         className="mt-6 px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition duration-200"
         disabled={loading}
       >
-        {loading ? "Processing..." : "Pay"}
+        {loading ? "Processing..." : `Pay $${totalPrice}`}
       </button>
 
       {paymentStatus === "PENDING" && (
@@ -76,14 +92,14 @@ const Payment = ({ orderId }) => {
             Proceed to Payment
           </a>
 
-          {qrCode && (
+          {qrCodeImage && (
             <div className="mt-4">
               <h4 className="text-lg">Scan this QR Code to pay:</h4>
               <img
-                src={qrCode}
+                src={qrCodeImage}
                 alt="QR Code"
                 className="w-40 h-40"
-                onClick={() => openQRCodeInNewWindow(qrCode)}
+                onClick={() => openQRCodeInNewWindow(qrCodeImage)}
               />
             </div>
           )}

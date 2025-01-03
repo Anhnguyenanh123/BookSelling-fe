@@ -77,6 +77,12 @@ const Orders = () => {
     dispatch(deleteOrder(orderId));
   };
 
+  const totalPrice = orders.reduce((acc, order) => {
+    return (
+      acc + order.orderDetails.reduce((acc, detail) => acc + detail.price, 0)
+    );
+  }, 0);
+
   return (
     <div className="py-14 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto">
       <div className="mt-10 flex flex-col xl:flex-row jusitfy-center items-stretch w-full xl:space-x-8 space-y-4 md:space-y-6 xl:space-y-0">
@@ -143,9 +149,6 @@ const Orders = () => {
                       Delete Order
                     </button>
                   </div>
-                  <div className="mt-6">
-                    <Payment orderId={order.id} />
-                  </div>
                 </div>
               );
             })}
@@ -189,6 +192,14 @@ const Orders = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Payment Button */}
+      <div className="mt-6 flex justify-center">
+        <Payment
+          orderId={orders.map((order) => order.id)}
+          totalPrice={totalPrice}
+        />
       </div>
     </div>
   );

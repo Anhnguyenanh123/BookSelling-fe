@@ -34,10 +34,16 @@ const paySlice = createSlice({
       })
       .addCase(initiatePayment.fulfilled, (state, action) => {
         state.loading = false;
-        state.paymentDetails = action.payload.data;
-        state.paymentStatus = action.payload.data.status;
-        state.checkoutUrl = action.payload.data.checkoutUrl;
-        state.qrCode = action.payload.data.qrCode;
+        const data = action.payload?.data;
+        if (data) {
+          state.paymentDetails = data;
+          state.paymentStatus = data.status;
+          state.checkoutUrl = data.checkoutUrl;
+          state.qrCode = data.qrCode;
+        } else {
+          state.paymentError = "Invalid payment data";
+          state.paymentStatus = "failed";
+        }
       })
       .addCase(initiatePayment.rejected, (state, action) => {
         state.loading = false;
