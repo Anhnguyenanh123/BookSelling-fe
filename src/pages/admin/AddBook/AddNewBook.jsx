@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import InputField from "./InputField";
 import SelectField from "./SelectField";
@@ -17,6 +17,13 @@ const AddNewBook = () => {
   } = useForm();
   const [imageFileName, setImageFileName] = useState(null);
   const [base64Image, setBase64Image] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("userToken");
+    if (!token) {
+      navigate("/login");
+    }
+  }, []);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];

@@ -1,22 +1,54 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { initiatePayment } from "../../redux/features/pay/paySlice";
+import Swal from "sweetalert2";
 
 const Payment = ({ orderId }) => {
   const dispatch = useDispatch();
   const { loading, paymentStatus, checkoutUrl, qrCode, paymentError } =
     useSelector((state) => state.payment) || {};
 
-  // Handle the Pay button click
   const handlePayment = () => {
-    dispatch(initiatePayment(orderId)); // Initiate the payment process
+    dispatch(initiatePayment(orderId));
+  };
+
+  // Function to open the QR code in a new window
+  const openQRCodeInNewWindow = (qrCodeUrl) => {
+    console.log("Opening QR Code in a new window");
+    const newWindow = window.open("", "_blank", "width=500,height=500");
+
+    if (newWindow) {
+      const img = newWindow.document.createElement("img");
+      img.src = qrCodeUrl;
+      img.alt = "QR Code Image";
+      img.style.width = "100%";
+
+      newWindow.document.body.appendChild(img);
+    } else {
+      Swal.fire({
+        icon: "warning",
+        title: "Popup Blocked",
+        text: "Popup was blocked. Please allow popups for this site.",
+        showConfirmButton: true,
+      });
+    }
   };
 
   useEffect(() => {
     if (paymentStatus === "success") {
-      alert("Payment successfully initiated.");
+      Swal.fire({
+        icon: "success",
+        title: "Payment successfully initiated.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     } else if (paymentStatus === "failed" && paymentError) {
-      alert(`Payment failed: ${paymentError}`);
+      Swal.fire({
+        icon: "error",
+        title: "Payment failed",
+        text: paymentError,
+        showConfirmButton: true,
+      });
     }
   }, [paymentStatus, paymentError]);
 
@@ -48,9 +80,10 @@ const Payment = ({ orderId }) => {
             <div className="mt-4">
               <h4 className="text-lg">Scan this QR Code to pay:</h4>
               <img
-                src={`data:image/png;base64,${qrCode}`}
+                src={qrCode}
                 alt="QR Code"
                 className="w-40 h-40"
+                onClick={() => openQRCodeInNewWindow(qrCode)}
               />
             </div>
           )}

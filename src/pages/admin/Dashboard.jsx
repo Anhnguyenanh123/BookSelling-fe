@@ -1,13 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaUser, FaBook } from "react-icons/fa";
-import { TbBrandBooking } from "react-icons/tb";
+import { FaUser } from "react-icons/fa";
 
 import StatCard from "./StatCard";
 import ManageNumbers from "./ManageNumbers";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("userToken");
+    if (!token) {
+      navigate("/login");
+    }
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("userId");

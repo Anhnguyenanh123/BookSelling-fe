@@ -19,6 +19,13 @@ const ManageBooks = () => {
   const [base64Image, setBase64Image] = useState("");
 
   useEffect(() => {
+    const token = localStorage.getItem("userToken");
+    if (!token) {
+      navigate("/login");
+    }
+  }, []);
+
+  useEffect(() => {
     dispatch(fetchBooks({ page: 0, limit: 10 }));
   }, [dispatch]);
 
