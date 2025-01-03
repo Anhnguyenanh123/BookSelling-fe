@@ -13,6 +13,6 @@ export const store = configureStore({
     book: bookReducer,
     review: reviewReducer,
     order: orderReducer,
-    pay: payReducer,
+    payment: payReducer,
   },
 });

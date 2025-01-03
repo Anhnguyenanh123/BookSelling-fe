@@ -1,15 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { createPayment } from "../../../services/PayosServices";
 
-const initialState = {
-  paymentStatus: null,
-  paymentError: null,
-  paymentDetails: null,
-  loading: false,
-  checkoutUrl: null,
-  qrCode: null,
-};
-
 export const initiatePayment = createAsyncThunk(
   "payment/initiatePayment",
   async (orderId, { rejectWithValue }) => {
@@ -27,7 +18,14 @@ export const initiatePayment = createAsyncThunk(
 // Create the payment slice
 const paySlice = createSlice({
   name: "payment",
-  initialState,
+  initialState: {
+    paymentStatus: null,
+    paymentError: null,
+    paymentDetails: null,
+    loading: false,
+    checkoutUrl: null,
+    qrCode: null,
+  },
   reducers: {},
   extraReducers: (builder) => {
     builder
