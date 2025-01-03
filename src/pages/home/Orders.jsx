@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchOrders } from "../../redux/features/order/ordersSlice.js";
+import { useLocation } from "react-router-dom";
+import {
+  fetchOrders,
+  createOrder,
+} from "../../redux/features/order/ordersSlice.js";
 import { fetchUserById } from "../../redux/features/user/userSlice.js";
 import { fetchBookById } from "../../redux/features/book/bookSlice.js";
 import { getImgUrl } from "../../services/getImgUrl.js";
 import Payment from "./Payment.jsx";
 
 const Orders = () => {
+  const location = useLocation();
+  const cartItems = location.state?.cartItems || [];
   const userId = localStorage.getItem("userId");
   const dispatch = useDispatch();
   const [customer, setCustomer] = useState({
@@ -16,7 +22,9 @@ const Orders = () => {
     address: "",
   });
   const { orders, loading, error } = useSelector((state) => state.order);
-  const { books, bookLoading, bookError } = useSelector((state) => state.book);
+  const { books } = useSelector((state) => state.book);
+
+  console.log(location);
 
   useEffect(() => {
     dispatch(fetchUserById(userId))
@@ -37,6 +45,25 @@ const Orders = () => {
   useEffect(() => {
     dispatch(fetchOrders({ page: 0, limit: 10 }));
   }, [dispatch]);
+
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      const order = {
+        userId,
+        totalPrice: cartItems.reduce(
+          (acc, item) => acc + item.quantity * item.price,
+          0
+        ),
+        orderDetails: cartItems.map((item) => ({
+          bookId: item.bookId,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+      };
+
+      dispatch(createOrder(order));
+    }
+  }, [cartItems, dispatch, userId]);
 
   useEffect(() => {
     orders.forEach((order) => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getImgUrl } from "../../services/getImgUrl";
 import {
   getCartThunk,
@@ -12,6 +12,7 @@ import Swal from "sweetalert2";
 
 const CartPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const cartItems = useSelector((state) => state.cart.cartItems) || [];
   const loading = useSelector((state) => state.cart.loading);
   const error = useSelector((state) => state.cart.error);
@@ -24,6 +25,8 @@ const CartPage = () => {
       dispatch(getCartThunk({ userId }));
     }
   }, [dispatch, userId]);
+
+  console.log(cartItems);
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -72,6 +75,10 @@ const CartPage = () => {
     });
   }
 
+  const handleCheckOut = () => {
+    navigate("/orders", { state: { cartItems } });
+  };
+
   return (
     <div className="flex mt-12 h-full flex-col overflow-hidden bg-white shadow-xl">
       <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
@@ -93,7 +100,7 @@ const CartPage = () => {
             {cartItems.length > 0 ? (
               <ul role="list" className="-my-6 divide-y divide-gray-200">
                 {cartItems.map((product) => (
-                  <li key={product._id} className="flex py-6">
+                  <li key={product?.bookId} className="flex py-6">
                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                       <img
                         alt=""
@@ -150,12 +157,16 @@ const CartPage = () => {
           Shipping and taxes calculated at checkout.
         </p>
         <div className="mt-6">
-          <Link
-            to="/orders"
-            className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
-          >
-            Checkout
-          </Link>
+          {cartItems.length > 0 ? (
+            <button
+              onClick={handleCheckOut}
+              className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+            >
+              Checkout
+            </button>
+          ) : (
+            <p>Your cart is empty</p>
+          )}
         </div>
         <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
           <Link to="/">
