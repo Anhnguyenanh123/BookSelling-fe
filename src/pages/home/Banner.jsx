@@ -1,7 +1,17 @@
 import React from "react";
 import banner from "../../assets/banner.png";
+import Swal from "sweetalert2";
 
 const Banner = () => {
+  const handleSubscribeClick = () => {
+    Swal.fire({
+      title: "Upcoming Soon",
+      text: "Our newsletter subscription feature is coming soon. Stay tuned!",
+      icon: "info",
+      confirmButtonText: "OK",
+    });
+  };
+
   return (
     <>
       <div className="flex flex-col md:flex-row-reverse py-16 justify-between items-center gap-12">
@@ -18,7 +28,9 @@ const Banner = () => {
             captivating memoirs, this week new releases offer something for
             everyone
           </p>
-          <button className="btn-primary">Subcribe</button>
+          <button onClick={handleSubscribeClick} className="btn-primary">
+            Subcribe
+          </button>
         </div>
       </div>
     </>

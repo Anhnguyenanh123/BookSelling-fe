@@ -13,7 +13,6 @@ import { getCartThunk } from "../redux/features/cart/catSlice";
 const navigation = [
   { name: "Orders", href: "/orders" },
   { name: "Cart", href: "/cart" },
-  { name: "Checkout", href: "/checkout" },
 ];
 
 const adminNavigation = [{ name: "Dashboard", href: "/dashboard" }];

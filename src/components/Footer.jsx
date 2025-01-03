@@ -1,9 +1,18 @@
 import React from "react";
 import footerLogo from "../assets/footer-logo.png";
-
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 const Footer = () => {
+  const handleSubscribeClick = () => {
+    Swal.fire({
+      title: "Upcoming Soon",
+      text: "Our newsletter subscription feature is coming soon. Stay tuned!",
+      icon: "info",
+      confirmButtonText: "OK",
+    });
+  };
+
   return (
     <footer className="bg-gray-900 text-white py-10 px-4">
       {/* Top Section */}
@@ -47,7 +56,10 @@ const Footer = () => {
               placeholder="Enter your email"
               className="w-full px-4 py-2 rounded-l-md text-black"
             />
-            <button className="bg-primary px-6 py-2 rounded-r-md hover:bg-primary-dark">
+            <button
+              className="bg-primary px-6 py-2 rounded-r-md hover:bg-primary-dark"
+              onClick={handleSubscribeClick}
+            >
               Subscribe
             </button>
           </div>
