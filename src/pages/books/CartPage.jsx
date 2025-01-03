@@ -31,7 +31,7 @@ const CartPage = () => {
   };
 
   const handleRemove = (product) => {
-    const bookId = product.bookId || product._id || product.id;
+    const bookId = product.bookId;
     if (bookId) {
       dispatch(removeCartThunk({ userId, bookId }));
     } else {
