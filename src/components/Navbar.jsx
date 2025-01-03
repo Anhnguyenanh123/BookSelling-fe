@@ -27,13 +27,9 @@ const Navbar = () => {
     0
   );
 
-  console.log(totalCartItems);
-
   useEffect(() => {
     if (currentUser?.id) {
-      dispatch(
-        getCartThunk({ userId: currentUser.id, token: currentUser.token })
-      );
+      dispatch(getCartThunk({ userId: currentUser.id }));
     }
   }, [currentUser, dispatch]);
 
@@ -125,13 +121,9 @@ const Navbar = () => {
             className="bg-primary p-1 sm:px-6 px-2 flex items-center gap-2 rounded-md"
           >
             <FaCartShopping className="size-6" />
-            {totalCartItems > 0 ? (
-              <span className="text-sm font-semibold sm:ml-1">
-                {totalCartItems}
-              </span>
-            ) : (
-              <span className="text-sm font-semibold sm:ml-1">0</span>
-            )}
+            <span className="text-sm font-semibold sm:ml-1">
+              {totalCartItems > 0 ? totalCartItems : 0}
+            </span>
           </Link>
         </div>
       </nav>

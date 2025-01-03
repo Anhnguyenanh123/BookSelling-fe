@@ -35,7 +35,7 @@ const BookCard = ({ book }) => {
     }
 
     // If user is logged in, dispatch the thunk
-    dispatch(createCartThunk({ userId, bookId: book.id, token }));
+    dispatch(createCartThunk({ userId, bookId: book.id }));
   };
 
   return (

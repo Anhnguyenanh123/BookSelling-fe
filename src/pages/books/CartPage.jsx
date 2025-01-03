@@ -14,25 +14,29 @@ const CartPage = () => {
   const cartItems = useSelector((state) => state.cart.cartItems) || [];
   const loading = useSelector((state) => state.cart.loading);
   const error = useSelector((state) => state.cart.error);
-  const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
 
   useEffect(() => {
-    if (userId && token) {
-      dispatch(getCartThunk({ userId, token }));
+    if (userId) {
+      dispatch(getCartThunk({ userId }));
     }
-  }, [dispatch, userId, token]);
+  }, [dispatch, userId]);
 
   const totalPrice = cartItems
-    .reduce((total, item) => total + item.newPrice * item.quantity, 0)
+    .reduce((total, item) => total + item.price * item.quantity, 0)
     .toFixed(2);
 
   const handleClearCart = () => {
-    dispatch(deleteCartThunk({ userId, token }));
+    dispatch(deleteCartThunk({ userId }));
   };
 
   const handleRemove = (product) => {
-    dispatch(removeCartThunk({ userId, bookId: product._id, token }));
+    const bookId = product.bookId || product._id || product.id;
+    if (bookId) {
+      dispatch(removeCartThunk({ userId, bookId }));
+    } else {
+      console.error("Product ID is undefined:", product);
+    }
   };
 
   if (loading) {
@@ -73,7 +77,7 @@ const CartPage = () => {
                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                       <img
                         alt=""
-                        src={`${getImgUrl(product.coverImage)}`}
+                        src={`${getImgUrl(product?.imageData)}`}
                         className="h-full w-full object-cover object-center"
                       />
                     </div>
@@ -84,11 +88,8 @@ const CartPage = () => {
                           <h3>
                             <Link to="/">{product.title}</Link>
                           </h3>
-                          <p className="sm:ml-4">${product.newPrice}</p>
+                          <p className="sm:ml-4">${product.price}</p>
                         </div>
-                        <p className="mt-1 text-sm text-gray-500 capitalize">
-                          <strong>Category:</strong> {product.category}
-                        </p>
                       </div>
                       <div className="flex flex-1 flex-wrap items-end justify-between space-y-2 text-sm">
                         <p className="text-gray-500">

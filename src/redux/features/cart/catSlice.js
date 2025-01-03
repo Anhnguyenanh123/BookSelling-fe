@@ -8,19 +8,12 @@ import {
   deleteCart,
 } from "./cartAPI";
 
-const initialState = {
-  cartItems: [],
-  cartId: null,
-  loading: false,
-  error: null,
-};
-
 // Thunks for each API
 export const createCartThunk = createAsyncThunk(
   "cart/createCart",
-  async ({ userId, bookId, token }, { rejectWithValue }) => {
+  async ({ userId, bookId }, { rejectWithValue }) => {
     try {
-      const data = await createCart(userId, bookId, token);
+      const data = await createCart(userId, bookId);
       return {
         cartItems: data.orderDetails || [], // Set cartItems from orderDetails
         cartId: data.id, // Set cartId from the response
@@ -33,12 +26,12 @@ export const createCartThunk = createAsyncThunk(
 
 export const getCartThunk = createAsyncThunk(
   "cart/getCart",
-  async ({ userId, token }, { rejectWithValue }) => {
+  async ({ userId }, { rejectWithValue }) => {
     try {
-      const data = await getCart(userId, token);
+      const data = await getCart(userId);
       return {
-        cartItems: data.orderDetails || [], // Set cartItems from orderDetails
-        cartId: data.id, // Set cartId from the response
+        cartItems: data.orderDetails || [],
+        cartId: data.id,
       };
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -48,9 +41,9 @@ export const getCartThunk = createAsyncThunk(
 
 export const updateCartThunk = createAsyncThunk(
   "cart/updateCart",
-  async ({ userId, bookId, quantity, token }, { rejectWithValue }) => {
+  async ({ userId, bookId, quantity }, { rejectWithValue }) => {
     try {
-      const data = await updateCart(userId, bookId, quantity, token);
+      const data = await updateCart(userId, bookId, quantity);
       return data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -60,9 +53,9 @@ export const updateCartThunk = createAsyncThunk(
 
 export const removeCartThunk = createAsyncThunk(
   "cart/removeCart",
-  async ({ userId, bookId, token }, { rejectWithValue }) => {
+  async ({ userId, bookId }, { rejectWithValue }) => {
     try {
-      const data = await removeCart(userId, bookId, token);
+      const data = await removeCart(userId, bookId);
       return data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -72,9 +65,9 @@ export const removeCartThunk = createAsyncThunk(
 
 export const deleteCartThunk = createAsyncThunk(
   "cart/deleteCart",
-  async ({ userId, token }, { rejectWithValue }) => {
+  async ({ userId }, { rejectWithValue }) => {
     try {
-      const data = await deleteCart(userId, token);
+      const data = await deleteCart(userId);
       return data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -85,14 +78,19 @@ export const deleteCartThunk = createAsyncThunk(
 // Slice definition
 export const cartSlice = createSlice({
   name: "cart",
-  initialState,
+  initialState: {
+    cartItems: [],
+    cartId: null,
+    loading: false,
+    error: null,
+  },
   reducers: {
     addToCart: (state, action) => {
       const existingItem = state.cartItems.find(
         (item) => item.bookId === action.payload.bookId
       );
       if (!existingItem) {
-        state.cartItems.push({ ...action.payload, quantity: 1 }); // Initialize quantity if the item is new
+        state.cartItems.push({ ...action.payload, quantity: 1 });
         Swal.fire({
           icon: "success",
           title: "Item added to cart",
@@ -100,7 +98,6 @@ export const cartSlice = createSlice({
           timer: 1500,
         });
       } else {
-        // Update quantity if the item is already in the cart
         existingItem.quantity += 1;
         Swal.fire({
           icon: "success",
@@ -129,7 +126,7 @@ export const cartSlice = createSlice({
       })
       .addCase(getCartThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.cartItems = action.payload.orderDetails;
+        state.cartItems = action.payload.cartItems || [];
         state.cartId = action.payload.cartId;
       })
       .addCase(getCartThunk.rejected, (state, action) => {
