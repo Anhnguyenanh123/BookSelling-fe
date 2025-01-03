@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { getImgUrl } from "../../services/getImgUrl";
@@ -7,6 +7,7 @@ import {
   removeCartThunk,
   deleteCartThunk,
 } from "../../redux/features/cart/catSlice";
+import { fetchBookById } from "../../redux/features/book/bookSlice";
 import Swal from "sweetalert2";
 
 const CartPage = () => {
@@ -16,11 +17,30 @@ const CartPage = () => {
   const error = useSelector((state) => state.cart.error);
   const userId = localStorage.getItem("userId");
 
+  const [bookDetails, setBookDetails] = useState({});
+
   useEffect(() => {
     if (userId) {
       dispatch(getCartThunk({ userId }));
     }
   }, [dispatch, userId]);
+
+  useEffect(() => {
+    const fetchBooks = async () => {
+      const details = {};
+      await Promise.all(
+        cartItems.map(async (item) => {
+          const result = await dispatch(fetchBookById(item.bookId)).unwrap();
+          details[item.bookId] = result;
+        })
+      );
+      setBookDetails(details);
+    };
+
+    if (cartItems.length > 0) {
+      fetchBooks();
+    }
+  }, [cartItems, dispatch]);
 
   const totalPrice = cartItems
     .reduce((total, item) => total + item.price * item.quantity, 0)
@@ -77,7 +97,9 @@ const CartPage = () => {
                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                       <img
                         alt=""
-                        src={`${getImgUrl(product?.imageData)}`}
+                        src={`${getImgUrl(
+                          bookDetails[product.bookId]?.imageData
+                        )}`}
                         className="h-full w-full object-cover object-center"
                       />
                     </div>
@@ -86,7 +108,9 @@ const CartPage = () => {
                       <div>
                         <div className="flex flex-wrap justify-between text-base font-medium text-gray-900">
                           <h3>
-                            <Link to="/">{product.title}</Link>
+                            <Link to="/">
+                              Title: {bookDetails[product.bookId]?.title}
+                            </Link>
                           </h3>
                           <p className="sm:ml-4">${product.price}</p>
                         </div>
