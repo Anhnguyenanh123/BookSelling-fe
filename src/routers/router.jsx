@@ -4,7 +4,6 @@ import Home from "../pages/home/Home";
 import Login from "../components/Login";
 import Register from "../components/Register";
 import CartPage from "../pages/books/CartPage";
-import CheckOut from "../pages/books/CheckOut";
 import Dashboard from "../pages/admin/Dashboard";
 import User from "../pages/home/User";
 import Orders from "../pages/home/Orders";
@@ -46,14 +45,6 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoutes>
             <CartPage />
-          </PrivateRoutes>
-        ),
-      },
-      {
-        path: "/checkout",
-        element: (
-          <PrivateRoutes>
-            <CheckOut />
           </PrivateRoutes>
         ),
       },
